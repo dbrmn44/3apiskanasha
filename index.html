@@ -201,6 +201,8 @@ button,input,select{font:inherit;color:inherit}
 .basket-list li{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
 .basket-list li b{white-space:nowrap}
 .basket-h{font-size:14px;font-weight:800;margin-top:4px}
+.sync-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.sync-steps a{color:var(--accent);font-weight:700}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom, 0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;display:flex;gap:14px;align-items:center;z-index:20;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
 .toast button{background:transparent;border:0;color:var(--bg);font-weight:800;text-decoration:underline;cursor:pointer}
@@ -288,6 +290,11 @@ button,input,select{font:inherit;color:inherit}
     </main>
 
     <aside class="col">
+      <section class="card" id="syncCard" aria-labelledby="syncH">
+        <div class="card-h"><h2 id="syncH">Синхронизация</h2><span class="chip mut" id="syncChip">Выключена</span></div>
+        <div id="syncBody" style="display:flex;flex-direction:column;gap:10px"></div>
+      </section>
+
       <section class="card" aria-labelledby="budH">
         <div class="card-h"><h2 id="budH">Лимиты на месяц</h2><button class="btn small" id="editBud">Изменить</button></div>
         <div id="budgets" style="display:flex;flex-direction:column;gap:14px"></div>
@@ -432,31 +439,124 @@ const TIP_LIB = {
 };
 const tipKeyFor = id => ({groceries:'groceries',cafe:'cafe',subs:'subs',wants:'wants',clothes:'wants',beauty:'wants',gifts:'wants',fun:'wants',shopping:'wants'})[id]||'general';
 
-function defaultSettings(){return {budgets:{},goals:[],reserve:0}}
-let live = {months:{}, settings:defaultSettings()};
+function defaultSettings(){return {budgets:{},goals:[],reserve:0,updatedAt:0}}
+let live = {months:{}, settings:defaultSettings(), deleted:{}};
 let demo = null;
 const D = () => demo || live;
 const S = {mode:'loading', db:null, uid:null, loaded:false, cur:ymOf(todayISO), editBud:false, tipTab:'groceries', confirmGoal:null, sample:null, sampleOff:false, advOpen:null, adv:{}, advPref:{}};
 const writers = {};
 
-/* ---------- storage: this browser (localStorage) ---------- */
-const KEY='evrobudget.v1';
+/* ---------- storage: this browser (localStorage) + sync through a private GitHub repo ---------- */
+const KEY='evrobudget.v1', SKEY='evrobudget.sync', DEFAULT_REPO='dbrmn44/3apiskanasha-data';
 let lastSaveFailed=false, importPending=null;
-function anyBusy(){return false}
-function persist(){
-  if(demo) return;
+const SY={cfg:null, state:'off', busy:false, dirty:false, timer:null, lastOk:null, err:''};
+function anyBusy(){return SY.busy}
+function saveLocal(){
   try{
-    localStorage.setItem(KEY, JSON.stringify({v:1,savedAt:new Date().toISOString(),months:live.months,settings:live.settings}));
+    localStorage.setItem(KEY, JSON.stringify(pack(live)));
     lastSaveFailed=false;
   }catch(e){
     lastSaveFailed=true;
     toast('Не удалось сохранить: браузер не даёт доступ к хранилищу. Скачайте резервную копию.');
   }
-  renderStatus();
+}
+function persist(key){
+  if(demo) return;
+  if(key==='settings') live.settings.updatedAt=Date.now();
+  saveLocal(); schedulePush(); renderStatus();
+}
+function loadCfg(){ try{ SY.cfg=JSON.parse(localStorage.getItem(SKEY)||'null'); }catch(e){ SY.cfg=null; } }
+function saveCfg(){ try{ if(SY.cfg) localStorage.setItem(SKEY,JSON.stringify(SY.cfg)); else localStorage.removeItem(SKEY); }catch(e){} }
+
+/* canonical form: same data always gives the same JSON */
+function pack(d){
+  const months={};
+  for(const ym of Object.keys(d.months).sort()){ if(d.months[ym].length) months[ym]=d.months[ym].slice().sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0); }
+  const deleted={}; for(const k of Object.keys(d.deleted||{}).sort()) deleted[k]=d.deleted[k];
+  const s=d.settings, budgets={}; for(const k of Object.keys(s.budgets).sort()) budgets[k]=s.budgets[k];
+  return {v:2,months,settings:{budgets,goals:s.goals,reserve:s.reserve,updatedAt:s.updatedAt||0},deleted};
+}
+/* union of operations from both sides; deletions win unless the operation was re-added later; newer settings win */
+function mergeData(a,b){
+  const deleted={};
+  for(const src of [a.deleted||{},b.deleted||{}]) for(const k in src) deleted[k]=Math.max(deleted[k]||0,src[k]);
+  const months={}, seen={};
+  for(const src of [a,b]) for(const ym in src.months) for(const t of src.months[ym]){
+    if(seen[t.id]) continue; seen[t.id]=1;
+    if(deleted[t.id] && deleted[t.id]>=(t.ts||0)) continue;
+    delete deleted[t.id];
+    (months[ym]||(months[ym]=[])).push(t);
+  }
+  const cutoff=Date.now()-200*86400000; for(const k in deleted) if(deleted[k]<cutoff) delete deleted[k];
+  const settings=(a.settings.updatedAt||0)>=(b.settings.updatedAt||0)?a.settings:b.settings;
+  return {months,settings:clone(settings),deleted};
+}
+
+const API='https://api.github.com';
+function b64enc(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)}
+function b64dec(b64){const bin=atob(String(b64).replace(/\s/g,''));return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0)))}
+function ghFetch(method,body){
+  const url=API+'/repos/'+SY.cfg.repo+'/contents/data.json'+(method==='GET'?'?ref=main':'');
+  const headers={'Accept':'application/vnd.github+json','Authorization':'Bearer '+SY.cfg.token,'X-GitHub-Api-Version':'2022-11-28'};
+  if(body) headers['Content-Type']='application/json';
+  return fetch(url,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'});
+}
+async function fetchRemote(){
+  const r=await ghFetch('GET');
+  if(r.status===404){
+    // file not there yet: tell "no file" apart from "no access to repo"
+    const repo=await fetch(API+'/repos/'+SY.cfg.repo,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+SY.cfg.token},cache:'no-store'});
+    if(!repo.ok) throw {status:repo.status===404?404:repo.status};
+    return {data:null,sha:null};
+  }
+  if(!r.ok) throw {status:r.status};
+  const j=await r.json();
+  return {data:JSON.parse(b64dec(j.content)),sha:j.sha};
+}
+function schedulePush(ms){
+  if(!SY.cfg || demo) return;
+  if(SY.busy){ SY.dirty=true; return; }
+  clearTimeout(SY.timer); SY.timer=setTimeout(sync, ms==null?1200:ms);
+}
+async function sync(){
+  if(!SY.cfg || demo) return;
+  if(SY.busy){ SY.dirty=true; return; }
+  clearTimeout(SY.timer);
+  SY.busy=true; SY.state='syncing'; renderStatus(); renderSync();
+  try{
+    let done=false;
+    for(let attempt=0; attempt<4 && !done; attempt++){
+      SY.dirty=false;
+      const rem=await fetchRemote();
+      const remote=rem.data ? normalize(rem.data) : null;
+      const before=JSON.stringify(pack(live));
+      live = remote ? mergeData(live,remote) : live;
+      const mergedStr=JSON.stringify(pack(live));
+      if(mergedStr!==before){ saveLocal(); render(); }
+      if(remote && mergedStr===JSON.stringify(pack(remote))){ done=true; break; }
+      const body={message:'Обновление данных '+new Date().toISOString(),content:b64enc(mergedStr),branch:'main'};
+      if(rem.sha) body.sha=rem.sha;
+      const r=await ghFetch('PUT',body);
+      if(r.ok){ done=true; break; }
+      if(r.status===409 || r.status===422) continue;   // another device wrote first: fetch again and merge
+      throw {status:r.status};
+    }
+    SY.state='ok'; SY.lastOk=new Date(); SY.err='';
+  }catch(e){
+    SY.state='error';
+    const st=e && e.status;
+    SY.err = st===401 ? 'GitHub не принял токен: он неверный или истёк. Создайте новый и подключите заново.'
+      : st===403 ? 'У токена нет доступа к записи в репозиторий с данными. Проверьте, что выбран репозиторий '+SY.cfg.repo+' и разрешение Contents: Read and write.'
+      : st===404 ? 'Репозиторий '+SY.cfg.repo+' не найден или токен его не видит.'
+      : 'Нет связи с GitHub. Изменения сохранены на этом устройстве и отправятся, когда связь появится.';
+  }
+  SY.busy=false; renderStatus(); renderSync();
+  if(SY.dirty) schedulePush(300);
 }
 function normalize(d){
-  const out={months:{},settings:defaultSettings()};
+  const out={months:{},settings:defaultSettings(),deleted:{}};
   if(!d || typeof d!=='object') return out;
+  if(d.deleted && typeof d.deleted==='object') for(const k in d.deleted){ const v=Number(d.deleted[k]); if(v>0) out.deleted[String(k)]=v; }
   if(d.months && typeof d.months==='object'){
     for(const k in d.months){
       if(!/^\d{4}-\d{2}$/.test(k) || !Array.isArray(d.months[k])) continue;
@@ -470,21 +570,27 @@ function normalize(d){
     if(s.budgets && typeof s.budgets==='object') for(const k in s.budgets){ const v=Math.round(Number(s.budgets[k])); if(v>0) out.settings.budgets[k]=v; }
     if(Array.isArray(s.goals)) out.settings.goals=s.goals.filter(g=>g && g.name).map(g=>({id:String(g.id||uid8()),name:String(g.name).slice(0,40),target:Math.max(0,Math.round(Number(g.target)||0)),saved:Math.max(0,Math.round(Number(g.saved)||0))}));
     out.settings.reserve=Math.max(0,Math.round(Number(s.reserve)||0));
+    out.settings.updatedAt=Math.max(0,Number(s.updatedAt)||0);
   }
   return out;
 }
 function loadLocal(){
   try{
     const raw=localStorage.getItem(KEY);
-    live = raw ? normalize(JSON.parse(raw)) : {months:{},settings:defaultSettings()};
+    live = normalize(raw ? JSON.parse(raw) : null);
     S.mode='live';
   }catch(e){ S.mode='nodb'; }
   S.loaded=true;
 }
 function init(){
-  loadLocal(); render();
+  loadLocal(); loadCfg(); render();
   // another tab of the site changed the data
-  window.addEventListener('storage',e=>{ if(e.key===KEY){ loadLocal(); render(); } });
+  window.addEventListener('storage',e=>{ if(e.key===KEY){ loadLocal(); render(); } if(e.key===SKEY){ loadCfg(); renderSync(); } });
+  // pick up changes from other devices
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') sync(); });
+  window.addEventListener('online',()=>sync());
+  setInterval(()=>{ if(document.visibilityState==='visible') sync(); },30000);
+  sync();
 }
 
 /* ---------- derived ---------- */
@@ -518,8 +624,10 @@ function renderStatus(){
   else if(lastSaveFailed){t='Не сохранилось';c+=' warn'}
   else if(S.mode==='error'){t='Ошибка хранилища';c+=' warn'}
   else if(S.mode==='slow'){t='Нет связи, данные могли устареть';c+=' warn'}
-  else if(anyBusy()){t='Сохраняю…'}
-  else if(S.mode==='live'){t='Сохранено в браузере';c+=' ok'}
+  else if(SY.cfg && SY.state==='syncing'){t='Синхронизация…'}
+  else if(SY.cfg && SY.state==='error'){t='Сохранено только здесь';c+=' warn'}
+  else if(SY.cfg && SY.state==='ok'){t='Синхронизировано';c+=' ok'}
+  else if(S.mode==='live'){t='Только на этом устройстве'}
   p.className=c; p.textContent=t;
 }
 
@@ -534,7 +642,7 @@ function render(){
   else if(S.mode==='error'){ $('#welcomeH').textContent='Хранилище не отвечает'; $('#welcomeP').textContent='Записи сейчас не сохраняются. Обновите страницу чуть позже. Пока можно посмотреть пример.'; }
   else { $('#welcomeH').textContent='Здесь пока пусто'; $('#welcomeP').textContent='Добавьте первую операцию в форме ниже: зарплату, покупку продуктов, перевод в копилку. Всё сохраняется в этом браузере, на сервер ничего не уходит.'; }
   const loading = !demo && !S.loaded && S.mode!=='nodb' && S.mode!=='error' && S.mode!=='cache' && S.mode!=='slow';
-  renderSummary(loading); renderCats(); renderTx(); renderBudgets(); renderRule(); renderReserve(); renderGoals(); renderCalc(); renderTipsLib(); renderBackup();
+  renderSummary(loading); renderCats(); renderTx(); renderBudgets(); renderRule(); renderReserve(); renderGoals(); renderCalc(); renderTipsLib(); renderBackup(); renderSync();
 }
 
 function renderSummary(loading){
@@ -837,12 +945,12 @@ function fillCats(){
 }
 function defaultDate(){ $('#fDate').value = S.cur===ymOf(todayISO) ? todayISO : S.cur+'-01'; }
 
-function addTx(tx){ const ym=ymOf(tx.date); const d=D(); (d.months[ym]||(d.months[ym]=[])).push(tx); persist('m-'+ym); render(); }
+function addTx(tx){ const ym=ymOf(tx.date); const d=D(); (d.months[ym]||(d.months[ym]=[])).push(tx); if(d.deleted) delete d.deleted[tx.id]; persist('m-'+ym); render(); }
 let lastDeleted=null;
 function deleteTx(x){
-  const ym=ymOf(x.date); const arr=D().months[ym]||[]; const i=arr.findIndex(t=>t.id===x.id); if(i<0) return;
-  arr.splice(i,1); persist('m-'+ym); render();
-  lastDeleted=x; toast('Операция удалена','Вернуть',()=>{ if(lastDeleted){ addTx(lastDeleted); lastDeleted=null; } });
+  const d=D(); const ym=ymOf(x.date); const arr=d.months[ym]||[]; const i=arr.findIndex(t=>t.id===x.id); if(i<0) return;
+  arr.splice(i,1); if(d.deleted) d.deleted[x.id]=Math.max(Date.now(),(x.ts||0)+1); persist('m-'+ym); render();
+  lastDeleted=x; toast('Операция удалена','Вернуть',()=>{ if(lastDeleted){ addTx(Object.assign({},lastDeleted,{ts:Date.now()+1})); lastDeleted=null; } });
 }
 
 let toastTimer=null;
@@ -908,6 +1016,47 @@ function renderBackup(){
   info.append('Последняя копия: '+new Date(y,m-1,d).toLocaleDateString('ru-RU')+'. ');
   if(days>=14) info.append(el('span','chip warn','Пора скачать новую'));
 }
+function renderSync(){
+  const box=$('#syncBody'); if(!box) return; box.textContent='';
+  const chip=$('#syncChip');
+  if(!SY.cfg){
+    chip.className='chip warn'; chip.textContent='Выключена';
+    box.append(el('p','hint','Сейчас записи есть только на этом устройстве. Подключите синхронизацию, и одно изменение появится везде: на телефоне, ноутбуке, в другом браузере. Данные хранятся в вашем закрытом репозитории GitHub, их видите только вы.'));
+    const ol=el('ol','sync-steps');
+    const li1=el('li'); li1.append('Откройте ');
+    const a=el('a',null,'страницу создания токена на GitHub'); a.href='https://github.com/settings/personal-access-tokens/new'; a.target='_blank'; a.rel='noopener'; li1.append(a,'.');
+    ol.append(li1,
+      el('li',null,'Token name: Евробюджет. Expiration: самый долгий срок, какой разрешит GitHub.'),
+      el('li',null,'Repository access: Only select repositories → '+DEFAULT_REPO.split('/')[1]+'.'),
+      el('li',null,'Permissions → Repositories → Add permissions → Contents → Read and write.'),
+      el('li',null,'Нажмите Generate token, скопируйте токен (начинается с github_pat_) и вставьте ниже.'));
+    box.append(ol);
+    box.append(el('p','hint','Сохраните токен в заметках или менеджере паролей: на каждом новом устройстве его нужно вставить один раз. Никому его не отправляйте.'));
+    const f=el('form','inline'); f.noValidate=true;
+    const fl=el('div','field'); const l=el('label',null,'Токен'); l.htmlFor='syncToken';
+    const inp=el('input','input'); inp.id='syncToken'; inp.type='password'; inp.autocomplete='off'; inp.placeholder='github_pat_…'; inp.spellcheck=false;
+    fl.append(l,inp);
+    const b=el('button','btn primary','Подключить'); b.type='submit';
+    f.append(fl,b); box.append(f);
+    f.addEventListener('submit',e=>{
+      e.preventDefault();
+      const t=inp.value.trim();
+      if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(t)){ toast('Это не похоже на токен GitHub. Он начинается с github_pat_'); inp.focus(); return; }
+      SY.cfg={token:t,repo:DEFAULT_REPO}; saveCfg(); SY.state='syncing'; renderSync(); sync();
+    });
+    return;
+  }
+  if(SY.state==='syncing'){ chip.className='chip mut'; chip.textContent='Синхронизация…'; }
+  else if(SY.state==='error'){ chip.className='chip neg'; chip.textContent='Ошибка'; }
+  else { chip.className='chip pos'; chip.textContent='Включена'; }
+  if(SY.state==='error') box.append(el('p','form-err',SY.err));
+  else box.append(el('p','hint', SY.lastOk ? 'Последняя синхронизация в '+SY.lastOk.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'. Изменения с других устройств подтягиваются, когда вы открываете сайт, и каждые 30 секунд.' : 'Подключаюсь к хранилищу…'));
+  const q=el('div','quick');
+  const now1=el('button','btn small','Синхронизировать сейчас'); now1.type='button'; now1.disabled=SY.busy; now1.addEventListener('click',()=>sync());
+  const off=el('button','btn small danger', S.confirmOff?'Точно отключить?':'Отключить на этом устройстве'); off.type='button';
+  off.addEventListener('click',()=>{ if(!S.confirmOff){ S.confirmOff=true; renderSync(); return; } S.confirmOff=false; SY.cfg=null; SY.state='off'; saveCfg(); renderStatus(); renderSync(); toast('Синхронизация отключена. Записи остались на этом устройстве.'); });
+  q.append(now1,off); box.append(q);
+}
 $('#exportBtn').addEventListener('click',()=>{
   const data=JSON.stringify({app:'evrobudget',v:1,exportedAt:new Date().toISOString(),months:live.months,settings:live.settings},null,1);
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
@@ -934,6 +1083,12 @@ $('#importFile').addEventListener('change',e=>{
 $('#importNo').addEventListener('click',()=>{importPending=null;$('#importConfirm').hidden=true});
 $('#importYes').addEventListener('click',()=>{
   if(!importPending) return;
+  // operations that are not in the file get deleted on every device too
+  const keep={}; for(const ym in importPending.months) for(const t of importPending.months[ym]) keep[t.id]=1;
+  const now2=Date.now();
+  for(const ym in live.months) for(const t of live.months[ym]) if(!keep[t.id]) importPending.deleted[t.id]=now2;
+  for(const ym in importPending.months) for(const t of importPending.months[ym]) { t.ts=Math.max(t.ts||0, now2+1); delete importPending.deleted[t.id]; }
+  importPending.settings.updatedAt=now2;
   live=importPending; importPending=null; demo=null; $('#importConfirm').hidden=true;
   persist(); render(); toast('Данные загружены из файла');
 });
