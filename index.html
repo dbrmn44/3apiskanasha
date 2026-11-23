@@ -1147,7 +1147,7 @@ function viewHome(){
     hero.append(el('div','big money'+(left<0?' neg':''), money0(left)));
     let sub='';
     if(left<0) sub='Ушло больше, чем пришло, на '+money0(-left);
-    else if(ctx.state==='cur') sub = left>0 ? '≈ '+money0(left/ctx.daysLeft)+' в день до конца месяца' : 'Свободных денег в этом месяце не осталось';
+    else if(ctx.state==='cur') sub = left>0 ? 'Из дохода '+money0(t.inc)+' осталось '+pct(left,t.inc)+'%' : 'Свободных денег в этом месяце не осталось';
     else if(ctx.state==='past') sub='Итог '+mName(S.cur,1,false);
     else sub='Запланировано';
     hero.append(el('div','sub'+(left<0?' neg':''),sub));
