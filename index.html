@@ -180,6 +180,13 @@ mark{background:var(--accent-soft);color:inherit;border-radius:3px}
 .lim-row .top{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
 .lim-row .top b{font-weight:600}
 .lim-row .top span{font-size:14px;color:var(--muted);white-space:nowrap}
+.lim-sub{font-size:13px;color:var(--muted);margin-top:6px}
+.lim-list .lim-row{padding:12px 16px}
+.lim-list .lim-row + .lim-row{border-top:1px solid var(--line)}
+@media (hover:hover){ .lim-list .lim-row:hover{background:var(--surface-2)} }
+.bar .mk{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.45;border-radius:1px}
+.lim-row .bar{height:6px}
+.lim-sub.warn,.lrow .sub.warn{color:var(--warn)} .lim-sub.neg,.lrow .sub.neg{color:var(--neg)}
 .home-empty{text-align:center;margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .home-empty h2{font-size:20px;font-weight:800}
 .home-empty p{color:var(--muted);max-width:32ch}
@@ -760,7 +767,25 @@ function monthCtx(ym){
 function limitInfo(id){
   const b=D().settings.budgets||{}; const lim=b[id]; if(!(lim>0)) return null;
   const spent=totals(S.cur).byCat[id]||0; const p=spent/lim;
-  return {id,lim,spent,rest:lim-spent,p,st:p>1?'neg':p>=.8?'warn':''};
+  const ctx=monthCtx(S.cur), norm=lim/ctx.last;
+  const planToDate = ctx.state==='cur' ? norm*ctx.daysPassed : ctx.state==='past' ? lim : 0;
+  const ahead = planToDate-spent;   // >0 in reserve, <0 above plan
+  const st = p>1 ? 'neg' : (ctx.state==='cur' && ahead<-100) || p>=.9 ? 'warn' : '';
+  return {id,lim,spent,rest:lim-spent,p,st,norm,week:norm*7,planToDate,ahead,ctx};
+}
+function limitBar(li,cls){
+  const bar=el('div','bar '+(cls||'')); bar.style.position='relative';
+  const fi=el('i',li.st); fi.style.width=Math.min(100,li.p*100)+'%'; bar.append(fi);
+  if(li.ctx.state==='cur' && li.rest>=0){ const mk=el('span','mk'); mk.style.left='calc('+Math.min(100,li.planToDate/li.lim*100)+'% - 1px)'; mk.title='План к сегодняшнему дню'; bar.append(mk); }
+  return bar;
+}
+/* one short line under a limit: norm per day, and whether we are within plan */
+function limitNote(li){
+  if(li.rest<0) return {t:'превышен на '+money0(-li.rest), c:'neg'};
+  const n='норма '+money(li.norm)+' в день';
+  if(li.ctx.state!=='cur') return {t:n, c:''};
+  if(li.ahead>=0) return {t:n+' · в запасе '+money0(li.ahead), c:''};
+  return {t:'выше плана на '+money0(-li.ahead)+' · '+n, c:'warn'};
 }
 function limitsSorted(){ const b=D().settings.budgets||{}; return Object.keys(b).filter(k=>b[k]>0).map(limitInfo).sort((a,b)=>b.p-a.p); }
 
@@ -1146,12 +1171,14 @@ function viewHome(){
   const limSec=el('div','sec');
   if(lims.length){
     const h=el('div','sec-h'); h.append(el('h2',null,'Лимиты'), btn('link','Все',()=>go('#/more/limits'))); limSec.append(h);
+    const lbox=el('div','list lim-list'); limSec.append(lbox);
     for(const li of (isDesk()?lims:lims.slice(0,3))){
       const b=btn('lim-row',null,()=>{ S.advOpen=li.id; go('#/more/limits/'+li.id); });
       const top=el('div','top'); top.append(el('b',null,catShort(li.id)));
-      top.append(el('span',li.rest<0?'neg':li.st==='warn'?'warn':'', li.rest<0?'больше на '+money0(-li.rest):'осталось '+money0(li.rest)));
-      const bar=el('div','bar b4'); const fi=el('i',li.st); fi.style.width=Math.min(100,li.p*100)+'%'; bar.append(fi);
-      b.append(top,bar); limSec.append(b);
+      top.append(el('span',null, money0(li.spent)+' из '+money0(li.lim)));
+      const bar=limitBar(li);
+      const nt=limitNote(li); const sub=el('div','lim-sub'+(nt.c?' '+nt.c:''),nt.t);
+      b.append(top,bar,sub); lbox.append(b);
     }
   } else if(hasData()){
     const s=el('div','status-line'); s.style.borderBottom='0'; s.append(el('p',null,'Лимиты не заданы')); s.append(btn('link','Настроить',()=>go('#/more/limits'))); limSec.append(s);
@@ -1401,7 +1428,7 @@ function moreLimits(top,body,arg){
     body.append(q); return;
   }
   const ctx=monthCtx(S.cur);
-  if(ctx.state==='cur') body.append(el('p','sumline','До конца месяца '+ctx.daysLeft+' '+plural(ctx.daysLeft,'день','дня','дней')));
+  if(ctx.state==='cur') body.append(el('p','sumline','До конца месяца '+ctx.daysLeft+' '+plural(ctx.daysLeft,'день','дня','дней')+'. Черта на полосе — сколько по плану можно было потратить к сегодняшнему дню.'));
   const box=el('div','list'); box.style.marginTop='8px';
   for(const li of lims){
     const w=el('div','lrow'); w.id='lim-'+li.id;
@@ -1409,10 +1436,8 @@ function moreLimits(top,body,arg){
     const head=btn(null,null,()=>{ S.advOpen=open?null:li.id; S.basketOpen=false; history.replaceState(null,'',open?'#/more/limits':'#/more/limits/'+li.id); S.lastRoute=route().key; render(); });
     head.setAttribute('aria-expanded',String(open));
     const t=el('div','top'); t.append(el('b',null,catShort(li.id)), el('span',null,money0(li.spent)+' из '+money0(li.lim)));
-    const bar=el('div','bar'); const fi=el('i',li.st); fi.style.width=Math.min(100,li.p*100)+'%'; bar.append(fi);
-    let sub;
-    if(li.rest<0) sub=el('div','sub neg','превышен на '+money0(-li.rest));
-    else sub=el('div','sub','осталось '+money0(li.rest)+(ctx.state==='cur'?' · можно '+money0(li.rest/ctx.daysLeft)+' в день':''));
+    const bar=limitBar(li);
+    const nt=limitNote(li); const sub=el('div','sub'+(nt.c?' '+nt.c:''),nt.t);
     head.append(t,bar,sub); w.append(head);
     if(open) w.append(adviceEl(li.id,li.spent,li.lim));
     box.append(w);
@@ -1423,23 +1448,24 @@ function moreLimits(top,body,arg){
 function advLine(k,v){ const d=el('div','adv-line'); d.append(el('span',null,k),el('b',null,v)); return d; }
 function adviceEl(id,spent,lim){
   const p=el('div','advice'); const ctx=monthCtx(S.cur); const rest=lim-spent;
+  const li=limitInfo(id);
   const dl=n=>n+' '+plural(n,'день','дня','дней');
+  p.append(advLine('Норма',money(li.norm)+' в день · '+money0(li.week)+' в неделю'));
   if(ctx.state==='cur'){
     if(rest>0){
-      const perDay=rest/ctx.daysLeft;
+      p.append(advLine('По плану к сегодняшнему дню',money0(li.planToDate)+', потрачено '+money0(spent)));
+      if(li.ahead>=0) p.append(el('p',null,'Вы в запасе на '+money0(li.ahead)+'. Тратьте по норме — и в конце месяца останется около '+money0(Math.max(0,rest-li.norm*ctx.daysLeft))+'.'));
+      else p.append(el('p','adv-warn','Вы потратили на '+money0(-li.ahead)+' больше плана. Чтобы уложиться, тратьте до '+money(rest/ctx.daysLeft)+' в день до конца месяца ('+dl(ctx.daysLeft)+').'));
       p.append(advLine('Осталось',money(rest)+' на '+dl(ctx.daysLeft)));
-      p.append(advLine('Можно тратить',money0(perDay)+' в день · '+money0(Math.min(rest,perDay*7))+' в неделю'));
-      if(ctx.daysPassed>=5 && spent>0){ const pace=spent/ctx.daysPassed*ctx.last;
-        p.append(el('p',pace>lim?'adv-warn':null, pace>lim ? 'Если тратить как сейчас, за месяц выйдет около '+money0(pace)+', на '+money0(pace-lim)+' больше лимита.' : 'Темп хороший: к концу месяца выйдет около '+money0(pace)+'.')); }
     } else p.append(el('p','adv-warn',(rest===0?'Лимит исчерпан.':'Лимит превышен на '+money(-rest)+'.')+' До конца месяца '+dl(ctx.daysLeft)+': обходитесь запасами, а если без трат никак, берите из хотелок, а не из сбережений.'));
   } else if(ctx.state==='past'){
     p.append(el('p',rest>=0?null:'adv-warn', rest>=0 ? 'Месяц закрыт в лимите, сэкономлено '+money(rest)+'. Эту сумму можно перевести в копилку.' : 'Месяц закрыт с превышением на '+money(-rest)+'. Либо поднимите лимит до реальных трат, либо урежьте их.'));
-  } else p.append(advLine('В среднем можно',money0(lim/ctx.last)+' в день · '+money0(lim/ctx.last*7)+' в неделю'));
+  }
   const key=tipKeyFor(id);
   const tl=el('ul','tips'); for(const tip of TIP_LIB[key].slice(0,3)) tl.append(el('li',null,tip)); p.append(tl);
   p.append(btn('link','Все советы: '+TIP_TABS.find(t=>t[0]===key)[1].toLowerCase(),()=>go('#/more/tips/'+key)));
   if(id==='groceries'){
-    const weekly = ctx.state==='cur' ? (rest>0 ? Math.min(rest, rest/ctx.daysLeft*7) : 0) : lim/ctx.last*7;
+    const weekly = ctx.state==='cur' ? Math.max(0, Math.min(rest, li.week)) : li.week;
     const bb=btn('btn',S.basketOpen?'Скрыть список':'Что купить на неделю',()=>{ S.basketOpen=!S.basketOpen; render(); });
     bb.style.alignSelf='flex-start'; p.append(bb);
     if(S.basketOpen) p.append(basketEl(weekly));
