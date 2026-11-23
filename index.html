@@ -68,6 +68,13 @@ button,input,select{font:inherit;color:inherit}
 
 .banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--accent-soft);color:var(--ink);border-radius:var(--r);padding:12px 16px}
 .banner b{color:var(--accent)}
+#demoBanner{position:sticky;top:env(safe-area-inset-top, 0px);z-index:15}
+.auth-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--accent);border-radius:var(--r);padding:12px 16px}
+.auth-banner p{margin:0;max-width:60ch}
+.gbtn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:700;cursor:pointer;min-height:44px}
+.gbtn:hover{border-color:var(--muted)}
+.gbtn:disabled{opacity:.6;cursor:wait}
+.gbtn svg{width:18px;height:18px;flex:none}
 
 /* summary */
 .summary{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -99,9 +106,11 @@ button,input,select{font:inherit;color:inherit}
 .btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
 .btn.link{background:transparent;border:0;color:var(--accent);padding:4px 0}
 .btn.danger{color:var(--neg)}
+.btn:disabled{opacity:.6;cursor:wait}
 .field{display:flex;flex-direction:column;gap:4px;min-width:0}
 .field label{font-size:12px;font-weight:700;color:var(--muted)}
-.input{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-width:0}
+/* 16px keeps iOS Safari from zooming in on every tap into a field */
+.input{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-width:0;font-size:16px}
 .input:focus{border-color:var(--accent);outline:none}
 .money-in{position:relative}
 .money-in .input{padding-right:30px}
@@ -113,7 +122,6 @@ button,input,select{font:inherit;color:inherit}
 .seg input:checked + label{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .seg input:focus-visible + label{outline:2px solid var(--accent)}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.form-grid .wide{grid-column:1/-1}
 .form-err{color:var(--neg);font-size:13px;margin:0;min-height:0}
 
 /* category bars */
@@ -145,6 +153,7 @@ button,input,select{font:inherit;color:inherit}
 .budget .row{display:flex;justify-content:space-between;gap:8px;font-size:14px}
 .budget .row b{font-weight:700}
 .budget .row span{color:var(--muted);white-space:nowrap}
+.budget .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .fill.ok{background:var(--pos)} .fill.warn{background:var(--warn)} .fill.over{background:var(--neg)}
 .budget-edit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
 
@@ -178,7 +187,6 @@ button,input,select{font:inherit;color:inherit}
 .calc-split{display:flex;height:10px;border-radius:999px;overflow:hidden}
 .calc-split div:first-child{background:var(--accent)} .calc-split div:last-child{background:var(--pos)}
 
-.budget .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .quick{display:flex;gap:8px;flex-wrap:wrap}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
 .tab{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted)}
@@ -192,17 +200,13 @@ button,input,select{font:inherit;color:inherit}
 .adv-ok{margin:0;color:var(--pos);font-size:14px;font-weight:600}
 .adv-tips{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:5px}
 .advice .btn.link{align-self:flex-start}
-.adv-ask{display:flex;gap:8px;flex-wrap:wrap}
-.adv-ask .input{flex:1;min-width:160px;background:var(--surface)}
-.adv-out{white-space:pre-wrap;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:460px;overflow:auto}
-.btn:disabled{opacity:.6;cursor:wait}
 .basket{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
 .basket-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .basket-list li{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
 .basket-list li b{white-space:nowrap}
 .basket-h{font-size:14px;font-weight:800;margin-top:4px}
-.sync-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
-.sync-steps a{color:var(--accent);font-weight:700}
+.acct{display:flex;align-items:center;gap:10px}
+.acct img{width:32px;height:32px;border-radius:50%}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom, 0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;display:flex;gap:14px;align-items:center;z-index:20;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
 .toast button{background:transparent;border:0;color:var(--bg);font-weight:800;text-decoration:underline;cursor:pointer}
@@ -215,6 +219,14 @@ button,input,select{font:inherit;color:inherit}
   .month .lbl{min-width:120px}
   .bar-row{grid-template-columns:minmax(0,6.5rem) minmax(0,1fr) auto}
   .bar-row .am small{display:none}
+}
+/* bigger tap targets on touch screens; desktop layout unchanged */
+@media (pointer:coarse){
+  .x{width:44px;height:44px;margin:-8px -10px -8px 4px}
+  .month button{width:44px;height:44px}
+  .btn.small,.tab,.btn.link{min-height:44px}
+  .toast button{min-height:44px;padding:0 12px;border:1px solid currentColor;border-radius:8px;text-decoration:none}
+  input[type=date].input{-webkit-appearance:none;appearance:none;min-height:42px;text-align:left}
 }
 @media (prefers-reduced-motion:reduce){ .fill{transition:none} }
 </style>
@@ -233,6 +245,11 @@ button,input,select{font:inherit;color:inherit}
     </div>
   </header>
 
+  <div class="auth-banner" id="authBanner" hidden>
+    <p id="authBannerText">Войдите через Google, и записи будут одинаковыми на телефоне и компьютере.</p>
+    <button class="gbtn" id="authBannerBtn" type="button"></button>
+  </div>
+
   <div class="banner" id="demoBanner" hidden>
     <span><b>Это пример.</b> Цифры выдуманы и никуда не сохраняются.</span>
     <button class="btn small" id="exitDemo">Вернуться к моим данным</button>
@@ -248,7 +265,7 @@ button,input,select{font:inherit;color:inherit}
   <section class="welcome" id="welcome" hidden>
     <div>
       <h2 id="welcomeH">Здесь пока пусто</h2>
-      <p id="welcomeP">Добавьте первую операцию в форме ниже: зарплату, покупку продуктов, перевод в копилку. Всё сохраняется только для вас, другие люди ваши записи не видят.</p>
+      <p id="welcomeP">Добавьте первую операцию в форме ниже.</p>
     </div>
     <button class="btn primary" id="showDemo">Показать на примере</button>
   </section>
@@ -265,12 +282,12 @@ button,input,select{font:inherit;color:inherit}
               <input type="radio" name="ttype" id="tSav" value="saving"><label for="tSav">Отложить</label>
             </div>
             <div class="form-grid">
-              <div class="field"><label for="fAmt">Сумма</label><div class="money-in"><input class="input" id="fAmt" inputmode="decimal" placeholder="0,00" autocomplete="off"><span>€</span></div></div>
+              <div class="field"><label for="fAmt">Сумма</label><div class="money-in"><input class="input" id="fAmt" inputmode="decimal" placeholder="0,00" autocomplete="off" aria-describedby="fErr"><span>€</span></div></div>
               <div class="field"><label for="fCat">Категория</label><select class="input" id="fCat"></select></div>
               <div class="field"><label for="fDate">Дата</label><input class="input" type="date" id="fDate"></div>
               <div class="field"><label for="fNote">Заметка</label><input class="input" id="fNote" placeholder="Например, Lidl" maxlength="80" autocomplete="off"></div>
             </div>
-            <p class="form-err" id="fErr" hidden></p>
+            <p class="form-err" id="fErr" role="alert" hidden></p>
             <div><button class="btn primary" type="submit">Добавить</button></div>
           </div>
         </form>
@@ -290,8 +307,8 @@ button,input,select{font:inherit;color:inherit}
     </main>
 
     <aside class="col">
-      <section class="card" id="syncCard" aria-labelledby="syncH">
-        <div class="card-h"><h2 id="syncH">Синхронизация</h2><span class="chip mut" id="syncChip">Выключена</span></div>
+      <section class="card" id="syncCard" aria-labelledby="syncH" hidden>
+        <div class="card-h"><h2 id="syncH">Вход и синхронизация</h2><span class="chip mut" id="syncChip">—</span></div>
         <div id="syncBody" style="display:flex;flex-direction:column;gap:10px"></div>
       </section>
 
@@ -341,7 +358,7 @@ button,input,select{font:inherit;color:inherit}
 
       <section class="card" aria-labelledby="bakH">
         <div class="card-h"><h2 id="bakH">Резервная копия</h2></div>
-        <p class="hint">Записи хранятся только в этом браузере на этом устройстве. Если очистить данные браузера, они пропадут. Раз в пару недель скачивайте копию. Чтобы перенести данные на телефон или другой компьютер, загрузите там этот файл.</p>
+        <p class="hint" id="bakHint"></p>
         <div class="quick">
           <button class="btn" id="exportBtn" type="button">Скачать копию</button>
           <button class="btn" id="importBtn" type="button">Загрузить из файла</button>
@@ -357,27 +374,56 @@ button,input,select{font:inherit;color:inherit}
   </div>
 </div>
 
-<div class="toast" id="toast" hidden><span id="toastMsg"></span><button id="toastAct" hidden></button></div>
+<div role="status" aria-live="polite" aria-atomic="true"><div class="toast" id="toast" hidden><span id="toastMsg"></span><button id="toastAct" hidden></button></div></div>
 
 <script>
 (function(){
 "use strict";
+
+/* Firebase web config. These values are public by design; access to data is
+   controlled by Firestore security rules (only the owner's account). */
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyDy39A_OZhrUT4ZQpOHBTEOx9MbeaSbqA0',
+  authDomain: 'dbrmnn-42db6.firebaseapp.com',
+  projectId: 'dbrmnn-42db6',
+  appId: '1:413897122178:web:76c45e19d88da8e29eef9b',
+  messagingSenderId: '413897122178'
+};
+const FB_VER = '13.4.0';
+
 const $ = s => document.querySelector(s);
 const fmt = new Intl.NumberFormat('ru-RU',{style:'currency',currency:'EUR'});
 const fmt0 = new Intl.NumberFormat('ru-RU',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 const money = c => fmt.format((c||0)/100);
 const money0 = c => fmt0.format(Math.round((c||0)/100));
 const pad = n => String(n).padStart(2,'0');
-const now = new Date();
-const todayISO = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+const isoOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+let now = new Date();
+let todayISO = isoOf(now);
 const ymOf = iso => iso.slice(0,7);
 function shiftYm(ym,d){let [y,m]=ym.split('-').map(Number);m+=d;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return `${y}-${pad(m)}`}
 function ymLabel(ym){const [y,m]=ym.split('-').map(Number);const s=new Intl.DateTimeFormat('ru-RU',{month:'long'}).format(new Date(y,m-1,1));return s[0].toUpperCase()+s.slice(1)+' '+y}
 function dayLabel(iso){const [y,m,d]=iso.split('-').map(Number);return new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',weekday:'short'}).format(new Date(y,m-1,d))}
-function parseCents(v){if(v==null)return NaN;const s=String(v).replace(/\s/g,'').replace(',','.');if(!/^\d*\.?\d*$/.test(s)||s===''||s==='.')return NaN;return Math.round(parseFloat(s)*100)}
+/* "12,50", "12.50", "1.250" (thousands), "1 250,00 €"; more than 2 decimals is rejected */
+function parseCents(v){
+  if(v==null) return NaN;
+  let s=String(v).replace(/[\s  €]/g,'');
+  if(!s) return NaN;
+  const lc=s.lastIndexOf(','), ld=s.lastIndexOf('.');
+  if(lc>=0 && ld>=0){ const dec=lc>ld?',':'.', th=dec===','?'.':','; s=s.split(th).join('').replace(dec,'.'); }
+  else if(lc>=0){ s = s.indexOf(',')!==lc ? s.split(',').join('') : s.replace(',','.'); }
+  else if(/^\d{1,3}(\.\d{3})+$/.test(s)) s=s.replace(/\./g,'');
+  const m=/^(\d+)(?:\.(\d{0,2}))?$|^\.(\d{1,2})$/.exec(s);
+  if(!m) return NaN;
+  return Number(m[1]||0)*100+Number(((m[2]||m[3]||'')+'00').slice(0,2));
+}
 const uid8 = () => Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 const clone = o => JSON.parse(JSON.stringify(o));
 const pct = (a,b) => b>0 ? Math.round(a/b*100) : 0;
+const coarse = () => !!(window.matchMedia && matchMedia('(pointer:coarse)').matches);
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
 const CATS = {
   expense:[['groceries','Продукты','need'],['wants','Хотелки','want'],['cafe','Кафе и доставка','want'],['fun','Развлечения','want'],['clothes','Одежда','want'],['beauty','Уход и красота','want'],['subs','Подписки','want'],['gifts','Подарки','want'],['transport','Транспорт','need'],['health','Здоровье и аптека','need'],['other','Другое','want']],
@@ -439,159 +485,219 @@ const TIP_LIB = {
 };
 const tipKeyFor = id => ({groceries:'groceries',cafe:'cafe',subs:'subs',wants:'wants',clothes:'wants',beauty:'wants',gifts:'wants',fun:'wants',shopping:'wants'})[id]||'general';
 
-function defaultSettings(){return {budgets:{},goals:[],reserve:0,updatedAt:0}}
-let live = {months:{}, settings:defaultSettings(), deleted:{}};
+/* ---------- data model ----------
+   live = {months:{'YYYY-MM':[tx]}, settings:{budgets:{cat:cents}, goals:[goal], reserve:cents}}
+   tx   = {id,type,cat,amount,date,note,ts}
+   goal = {id,name,target,base,ops:{opId:delta},created,saved}  (saved = base + sum(ops)) */
+function defaultSettings(){return {budgets:{},goals:[],reserve:0}}
+let live = {months:{}, settings:defaultSettings()};
 let demo = null;
 const D = () => demo || live;
-const S = {mode:'loading', db:null, uid:null, loaded:false, cur:ymOf(todayISO), editBud:false, tipTab:'groceries', confirmGoal:null, sample:null, sampleOff:false, advOpen:null, adv:{}, advPref:{}};
-const writers = {};
-
-/* ---------- storage: this browser (localStorage) + sync through a private GitHub repo ---------- */
-const KEY='evrobudget.v1', SKEY='evrobudget.sync', DEFAULT_REPO='dbrmn44/3apiskanasha-data';
+const S = {mode:'loading', loaded:false, cur:ymOf(todayISO), editBud:false, tipTab:'groceries', confirmGoal:null, advOpen:null, basketOpen:false, confirmOut:false};
+const KEY='evrobudget.v1', OKEY='evrobudget.outbox', UKEY='evrobudget.syncedUid';
 let lastSaveFailed=false, importPending=null;
-const SY={cfg:null, state:'off', busy:false, dirty:false, timer:null, lastOk:null, err:''};
-function anyBusy(){return SY.busy}
-function saveLocal(){
-  try{
-    localStorage.setItem(KEY, JSON.stringify(pack(live)));
-    lastSaveFailed=false;
-  }catch(e){
-    lastSaveFailed=true;
-    toast('Не удалось сохранить: браузер не даёт доступ к хранилищу. Скачайте резервную копию.');
-  }
-}
-function persist(key){
-  if(demo) return;
-  if(key==='settings') live.settings.updatedAt=Date.now();
-  saveLocal(); schedulePush(); renderStatus();
-}
-function loadCfg(){ try{ SY.cfg=JSON.parse(localStorage.getItem(SKEY)||'null'); }catch(e){ SY.cfg=null; } }
-function saveCfg(){ try{ if(SY.cfg) localStorage.setItem(SKEY,JSON.stringify(SY.cfg)); else localStorage.removeItem(SKEY); }catch(e){} }
 
-/* canonical form: same data always gives the same JSON */
-function pack(d){
-  const months={};
-  for(const ym of Object.keys(d.months).sort()){ if(d.months[ym].length) months[ym]=d.months[ym].slice().sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0); }
-  const deleted={}; for(const k of Object.keys(d.deleted||{}).sort()) deleted[k]=d.deleted[k];
-  const s=d.settings, budgets={}; for(const k of Object.keys(s.budgets).sort()) budgets[k]=s.budgets[k];
-  return {v:2,months,settings:{budgets,goals:s.goals,reserve:s.reserve,updatedAt:s.updatedAt||0},deleted};
+function goalSaved(g){ let s=g.base||0; for(const k in (g.ops||{})) s+=g.ops[k]; return Math.max(0,s); }
+function normTx(x,id){
+  if(!x || typeof x.amount!=='number' || !(x.amount>0) || !/^\d{4}-\d{2}-\d{2}$/.test(String(x.date)) || !['income','expense','saving'].includes(x.type)) return null;
+  return {id:String(id||x.id||uid8()),type:x.type,cat:String(x.cat||'other'),amount:Math.round(x.amount),date:x.date,note:String(x.note||'').slice(0,80),ts:Number(x.ts)||0};
 }
-/* union of operations from both sides; deletions win unless the operation was re-added later; newer settings win */
-function mergeData(a,b){
-  const deleted={};
-  for(const src of [a.deleted||{},b.deleted||{}]) for(const k in src) deleted[k]=Math.max(deleted[k]||0,src[k]);
-  const months={}, seen={};
-  for(const src of [a,b]) for(const ym in src.months) for(const t of src.months[ym]){
-    if(seen[t.id]) continue; seen[t.id]=1;
-    if(deleted[t.id] && deleted[t.id]>=(t.ts||0)) continue;
-    delete deleted[t.id];
-    (months[ym]||(months[ym]=[])).push(t);
-  }
-  const cutoff=Date.now()-200*86400000; for(const k in deleted) if(deleted[k]<cutoff) delete deleted[k];
-  const settings=(a.settings.updatedAt||0)>=(b.settings.updatedAt||0)?a.settings:b.settings;
-  return {months,settings:clone(settings),deleted};
+function normGoal(g,id){
+  if(!g || typeof g!=='object' || !g.name) return null;
+  const ops={}; if(g.ops && typeof g.ops==='object') for(const k in g.ops){ const v=Math.round(Number(g.ops[k])||0); if(v) ops[String(k)]=v; }
+  const hasNew = g.ops!=null || g.base!=null;
+  const o={id:String(id||g.id||uid8()),name:String(g.name).slice(0,40),target:Math.max(0,Math.round(Number(g.target)||0)),
+    base:Math.max(0,Math.round(Number(hasNew?g.base:g.saved)||0)),ops,created:Number(g.created)||0};
+  o.saved=goalSaved(o); return o;
 }
-
-const API='https://api.github.com';
-function b64enc(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)}
-function b64dec(b64){const bin=atob(String(b64).replace(/\s/g,''));return new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0)))}
-function ghFetch(method,body){
-  const url=API+'/repos/'+SY.cfg.repo+'/contents/data.json'+(method==='GET'?'?ref=main':'');
-  const headers={'Accept':'application/vnd.github+json','Authorization':'Bearer '+SY.cfg.token,'X-GitHub-Api-Version':'2022-11-28'};
-  if(body) headers['Content-Type']='application/json';
-  return fetch(url,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'});
-}
-async function fetchRemote(){
-  const r=await ghFetch('GET');
-  if(r.status===404){
-    // file not there yet: tell "no file" apart from "no access to repo"
-    const repo=await fetch(API+'/repos/'+SY.cfg.repo,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+SY.cfg.token},cache:'no-store'});
-    if(!repo.ok) throw {status:repo.status===404?404:repo.status};
-    return {data:null,sha:null};
-  }
-  if(!r.ok) throw {status:r.status};
-  const j=await r.json();
-  return {data:JSON.parse(b64dec(j.content)),sha:j.sha};
-}
-function schedulePush(ms){
-  if(!SY.cfg || demo) return;
-  if(SY.busy){ SY.dirty=true; return; }
-  clearTimeout(SY.timer); SY.timer=setTimeout(sync, ms==null?1200:ms);
-}
-async function sync(){
-  if(!SY.cfg || demo) return;
-  if(SY.busy){ SY.dirty=true; return; }
-  clearTimeout(SY.timer);
-  SY.busy=true; SY.state='syncing'; renderStatus(); renderSync();
-  try{
-    let done=false;
-    for(let attempt=0; attempt<4 && !done; attempt++){
-      SY.dirty=false;
-      const rem=await fetchRemote();
-      const remote=rem.data ? normalize(rem.data) : null;
-      const before=JSON.stringify(pack(live));
-      live = remote ? mergeData(live,remote) : live;
-      const mergedStr=JSON.stringify(pack(live));
-      if(mergedStr!==before){ saveLocal(); render(); }
-      if(remote && mergedStr===JSON.stringify(pack(remote))){ done=true; break; }
-      const body={message:'Обновление данных '+new Date().toISOString(),content:b64enc(mergedStr),branch:'main'};
-      if(rem.sha) body.sha=rem.sha;
-      const r=await ghFetch('PUT',body);
-      if(r.ok){ done=true; break; }
-      if(r.status===409 || r.status===422) continue;   // another device wrote first: fetch again and merge
-      throw {status:r.status};
-    }
-    SY.state='ok'; SY.lastOk=new Date(); SY.err='';
-  }catch(e){
-    SY.state='error';
-    const st=e && e.status;
-    SY.err = st===401 ? 'GitHub не принял токен: он неверный или истёк. Создайте новый и подключите заново.'
-      : st===403 ? 'У токена нет доступа к записи в репозиторий с данными. Проверьте, что выбран репозиторий '+SY.cfg.repo+' и разрешение Contents: Read and write.'
-      : st===404 ? 'Репозиторий '+SY.cfg.repo+' не найден или токен его не видит.'
-      : 'Нет связи с GitHub. Изменения сохранены на этом устройстве и отправятся, когда связь появится.';
-  }
-  SY.busy=false; renderStatus(); renderSync();
-  if(SY.dirty) schedulePush(300);
+function normSettings(s){
+  const o=defaultSettings(); if(!s || typeof s!=='object') return o;
+  if(s.budgets && typeof s.budgets==='object') for(const k in s.budgets){ const v=Math.round(Number(s.budgets[k])); if(v>0) o.budgets[k]=v; }
+  let gs=[];
+  if(Array.isArray(s.goals)) gs=s.goals.map((g,i)=>{ const n=normGoal(g); if(n && !n.created) n.created=i+1; return n; });
+  else if(s.goals && typeof s.goals==='object') gs=Object.keys(s.goals).map(id=>normGoal(s.goals[id],id));
+  o.goals=gs.filter(Boolean).sort((a,b)=>(a.created-b.created)||(a.id<b.id?-1:1));
+  o.reserve=Math.max(0,Math.round(Number(s.reserve)||0));
+  return o;
 }
 function normalize(d){
-  const out={months:{},settings:defaultSettings(),deleted:{}};
+  const out={months:{},settings:defaultSettings()};
   if(!d || typeof d!=='object') return out;
-  if(d.deleted && typeof d.deleted==='object') for(const k in d.deleted){ const v=Number(d.deleted[k]); if(v>0) out.deleted[String(k)]=v; }
-  if(d.months && typeof d.months==='object'){
-    for(const k in d.months){
-      if(!/^\d{4}-\d{2}$/.test(k) || !Array.isArray(d.months[k])) continue;
-      out.months[k]=d.months[k]
-        .filter(x=>x && typeof x.amount==='number' && x.amount>0 && /^\d{4}-\d{2}-\d{2}$/.test(String(x.date)) && ['income','expense','saving'].includes(x.type))
-        .map(x=>({id:String(x.id||uid8()),type:x.type,cat:String(x.cat||'other'),amount:Math.round(x.amount),date:x.date,note:String(x.note||'').slice(0,80),ts:Number(x.ts)||0}));
-    }
+  if(d.months && typeof d.months==='object') for(const k in d.months){
+    const src=d.months[k]; const list=Array.isArray(src)?src:Object.values(src||{});
+    for(const x of list){ const t=normTx(x); if(t){ const ym=ymOf(t.date); (out.months[ym]||(out.months[ym]=[])).push(t); } }
   }
-  const s=d.settings;
-  if(s && typeof s==='object'){
-    if(s.budgets && typeof s.budgets==='object') for(const k in s.budgets){ const v=Math.round(Number(s.budgets[k])); if(v>0) out.settings.budgets[k]=v; }
-    if(Array.isArray(s.goals)) out.settings.goals=s.goals.filter(g=>g && g.name).map(g=>({id:String(g.id||uid8()),name:String(g.name).slice(0,40),target:Math.max(0,Math.round(Number(g.target)||0)),saved:Math.max(0,Math.round(Number(g.saved)||0))}));
-    out.settings.reserve=Math.max(0,Math.round(Number(s.reserve)||0));
-    out.settings.updatedAt=Math.max(0,Number(s.updatedAt)||0);
-  }
+  out.settings=normSettings(d.settings);
   return out;
 }
+const txOut = t => ({type:t.type,cat:t.cat,amount:t.amount,date:t.date,note:t.note||'',ts:t.ts||0});
+const goalOut = g => ({name:g.name,target:g.target,base:g.base||0,ops:g.ops||{},created:g.created||0});
+function packSettings(s){ return {budgets:s.budgets,reserve:s.reserve,goals:s.goals.map(g=>Object.assign({id:g.id},goalOut(g)))}; }
+
+function saveLocal(){
+  if(demo) return;
+  if(!lsSet(KEY, JSON.stringify({v:3,months:live.months,settings:packSettings(live.settings)}))){
+    if(!lastSaveFailed) toast('Не удалось сохранить в браузере. Скачайте резервную копию.');
+    lastSaveFailed=true;
+  } else lastSaveFailed=false;
+}
 function loadLocal(){
-  try{
-    const raw=localStorage.getItem(KEY);
-    live = normalize(raw ? JSON.parse(raw) : null);
-    S.mode='live';
-  }catch(e){ S.mode='nodb'; }
+  try{ const raw=localStorage.getItem(KEY); live=normalize(raw?JSON.parse(raw):null); S.mode='live'; }
+  catch(e){ S.mode='nodb'; }
   S.loaded=true;
 }
-function init(){
-  loadLocal(); loadCfg(); render();
-  // another tab of the site changed the data
-  window.addEventListener('storage',e=>{ if(e.key===KEY){ loadLocal(); render(); } if(e.key===SKEY){ loadCfg(); renderSync(); } });
-  // pick up changes from other devices
-  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') sync(); });
-  window.addEventListener('online',()=>sync());
-  setInterval(()=>{ if(document.visibilityState==='visible') sync(); },30000);
-  sync();
+
+/* ---------- cloud: Firebase (Google sign-in + Firestore) ----------
+   users/{uid}/months/{YYYY-MM} = {tx:{<id>:tx}}
+   users/{uid}/meta/settings    = {budgets:{cat:cents}, reserve, goals:{<id>:{name,target,base,ops,created}}}
+   Every change is a field-level merge, so edits from different devices never overwrite each other. */
+const C = {Au:null, Fs:null, auth:null, db:null, user:null, state:FIREBASE_CONFIG?'loading':'off', err:'',
+  unsub:[], got:{months:false,settings:false}, meta:{months:null,settings:null}, remoteMonths:{}, remoteSettings:null,
+  migrated:false, pending:false, lastSig:null, signingIn:false};
+const UA = navigator.userAgent||'';
+const IOS = /iP(hone|ad|od)/.test(UA) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+const STANDALONE = navigator.standalone===true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+const INAPP = /FBAN|FBAV|Instagram|Telegram|WhatsApp|Line\/|; wv\)/i.test(UA);
+
+async function initCloud(){
+  if(!FIREBASE_CONFIG){ C.state='off'; render(); return; }
+  try{
+    const base='https://www.gstatic.com/firebasejs/'+FB_VER+'/';
+    const [A,Au,Fs]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+    C.Au=Au; C.Fs=Fs;
+    const app=A.initializeApp(FIREBASE_CONFIG);
+    try{ C.db=Fs.initializeFirestore(app,{localCache:Fs.persistentLocalCache({tabManager:Fs.persistentMultipleTabManager()})}); }
+    catch(e){ C.db=Fs.getFirestore(app); }
+    C.auth=Au.getAuth(app);
+    Au.onAuthStateChanged(C.auth, onUser, ()=>{});
+  }catch(e){
+    C.state='error'; C.err='Не удалось загрузить вход через Google. Проверьте интернет и обновите страницу. Пока записи сохраняются на этом устройстве.';
+    render();
+  }
 }
+const monthRef = ym => C.Fs.doc(C.db,'users',C.user.uid,'months',ym);
+const settingsRef = () => C.Fs.doc(C.db,'users',C.user.uid,'meta','settings');
+
+function stopListeners(){ for(const f of C.unsub){ try{ f(); }catch(e){} } C.unsub=[]; C.got={months:false,settings:false}; C.migrated=false; C.lastSig=null; C.pending=false; }
+function onUser(u){
+  stopListeners();
+  C.user=u||null; C.err=''; S.confirmOut=false;
+  if(!u){ C.state='signedout'; render(); return; }
+  C.state='ready'; render();
+  const Fs=C.Fs, opts={includeMetadataChanges:true};
+  C.unsub.push(Fs.onSnapshot(Fs.collection(C.db,'users',u.uid,'months'),opts,snap=>{
+    const m={}; snap.forEach(doc=>{ m[doc.id]=doc.data(); });
+    C.remoteMonths=m; C.meta.months=snap.metadata; C.got.months=true; applyRemote();
+  },listenErr));
+  C.unsub.push(Fs.onSnapshot(settingsRef(),opts,snap=>{
+    C.remoteSettings=snap.exists()?snap.data():null; C.meta.settings=snap.metadata; C.got.settings=true; applyRemote();
+  },listenErr));
+}
+function listenErr(e){
+  const c=e&&e.code||'';
+  C.err = c==='permission-denied'
+    ? 'Этот аккаунт Google не может открыть данные Евробюджета. Выйдите и войдите тем аккаунтом, которым входили в первый раз.'
+    : 'Синхронизация остановилась ('+(c||'ошибка')+'). Обновите страницу. Записи пока сохраняются на этом устройстве.';
+  render();
+}
+function writeErr(e){
+  const c=e&&e.code||'';
+  toast(c==='permission-denied' ? 'Нет доступа к хранилищу для этого аккаунта Google.'
+    : c==='resource-exhausted' ? 'Бесплатный дневной лимит хранилища исчерпан. Изменения отправятся позже.'
+    : 'Не удалось отправить изменение ('+(c||'ошибка')+').');
+}
+function remoteData(){
+  const months={};
+  for(const ym in C.remoteMonths){ const tx=(C.remoteMonths[ym]||{}).tx||{}; for(const id in tx){ const t=normTx(tx[id],id); if(t){ const k=ymOf(t.date); (months[k]||(months[k]=[])).push(t); } } }
+  for(const k in months) months[k].sort((a,b)=>a.id<b.id?-1:1);
+  return {months, settings:normSettings(C.remoteSettings)};
+}
+function applyRemote(){
+  if(!C.got.months || !C.got.settings) return;
+  const fromCache = C.meta.months.fromCache || C.meta.settings.fromCache;
+  C.pending = C.meta.months.hasPendingWrites || C.meta.settings.hasPendingWrites;
+  if(!C.migrated){
+    // until the server has answered, keep showing this device's data; then add what the cloud lacks
+    if(fromCache){ renderStatus(); renderSync(); return; }
+    C.migrated=true;
+    if(migrateLocal()){ renderStatus(); renderSync(); return; }   // our own writes bring another snapshot right away
+  }
+  const next=remoteData();
+  const sig=JSON.stringify([next.months,packSettings(next.settings)]);
+  if(sig!==C.lastSig){ C.lastSig=sig; live=next; saveLocal(); renderKeepInput(); }
+  else { renderStatus(); renderSync(); renderBackup(); }
+}
+/* First time on this device: upload what the cloud does not have yet. Later: replay changes made while signed out. */
+function migrateLocal(){
+  let wrote=false;
+  const first = lsGet(UKEY)!==C.user.uid;
+  if(first){
+    const r=remoteData(), ids=new Set();
+    for(const ym in r.months) for(const t of r.months[ym]) ids.add(t.id);
+    const byMonth={};
+    for(const ym in live.months) for(const t of live.months[ym]) if(!ids.has(t.id)){ const k=ymOf(t.date); (byMonth[k]||(byMonth[k]={}))[t.id]=txOut(t); }
+    for(const ym in byMonth){ run(()=>C.Fs.setDoc(monthRef(ym),{tx:byMonth[ym]},{merge:true})); wrote=true; }
+    const patch={}, rs=r.settings, ls=live.settings;
+    for(const k in ls.budgets) if(!(k in rs.budgets)) (patch.budgets||(patch.budgets={}))[k]=ls.budgets[k];
+    const rg=new Set(rs.goals.map(g=>g.id));
+    for(const g of ls.goals) if(!rg.has(g.id)) (patch.goals||(patch.goals={}))[g.id]=goalOut(g);
+    if((!C.remoteSettings || C.remoteSettings.reserve==null) && ls.reserve>0) patch.reserve=ls.reserve;
+    if(Object.keys(patch).length){ run(()=>C.Fs.setDoc(settingsRef(),patch,{merge:true})); wrote=true; }
+    lsSet(UKEY,C.user.uid);
+  }
+  let box=[]; try{ box=JSON.parse(lsGet(OKEY)||'[]'); }catch(e){}
+  for(const op of box){ if(CW[op.k]){ run(()=>CW[op.k].apply(null, op.k==='replace'?[normalize(op.a[0])]:op.a)); wrote=true; } }
+  lsDel(OKEY);
+  return wrote;
+}
+function run(fn){ try{ const p=fn(); if(p && p.catch) p.catch(writeErr); }catch(e){ writeErr(e); } }
+/* cloud writers; each is a field-level merge */
+const CW = {
+  addTx:t=>C.Fs.setDoc(monthRef(ymOf(t.date)),{tx:{[t.id]:txOut(t)}},{merge:true}),
+  delTx:(ym,id)=>C.Fs.setDoc(monthRef(ym),{tx:{[id]:C.Fs.deleteField()}},{merge:true}),
+  budgets:patch=>{ const b={}; for(const k in patch) b[k]=patch[k]>0?patch[k]:C.Fs.deleteField(); return C.Fs.setDoc(settingsRef(),{budgets:b},{merge:true}); },
+  reserve:v=>C.Fs.setDoc(settingsRef(),{reserve:v},{merge:true}),
+  goalAdd:g=>C.Fs.setDoc(settingsRef(),{goals:{[g.id]:goalOut(g)}},{merge:true}),
+  goalOp:(id,opId,delta)=>C.Fs.setDoc(settingsRef(),{goals:{[id]:{ops:{[opId]:delta}}}},{merge:true}),
+  goalDel:id=>C.Fs.setDoc(settingsRef(),{goals:{[id]:C.Fs.deleteField()}},{merge:true}),
+  replace:data=>{
+    const Fs=C.Fs, b=Fs.writeBatch(C.db);
+    for(const ym in C.remoteMonths) if(!data.months[ym]) b.delete(monthRef(ym));
+    for(const ym in data.months){ const tx={}; for(const t of data.months[ym]) tx[t.id]=txOut(t); b.set(monthRef(ym),{tx}); }
+    const goals={}; for(const g of data.settings.goals) goals[g.id]=goalOut(g);
+    b.set(settingsRef(),{budgets:data.settings.budgets,reserve:data.settings.reserve,goals});
+    return b.commit();
+  }
+};
+/* send a change to the cloud, or keep it for later if not signed in */
+function send(k,...a){
+  if(demo) return;
+  if(C.user && C.Fs) run(()=>CW[k](...a));
+  else if(FIREBASE_CONFIG){ let box=[]; try{ box=JSON.parse(lsGet(OKEY)||'[]'); }catch(e){} box.push({k,a}); lsSet(OKEY,JSON.stringify(box.slice(-3000))); }
+}
+
+/* ---------- store: every change goes through here ---------- */
+function after(){ saveLocal(); render(); }
+function addTx(tx){ const d=D(), ym=ymOf(tx.date); (d.months[ym]||(d.months[ym]=[])).push(tx); send('addTx',tx); after(); }
+function removeTx(tx){
+  const d=D(), ym=ymOf(tx.date), arr=d.months[ym]||[], i=arr.findIndex(t=>t.id===tx.id);
+  if(i<0) return false;
+  arr.splice(i,1); if(!arr.length) delete d.months[ym];
+  send('delTx',ym,tx.id); after(); return true;
+}
+function setBudgets(nb){
+  const d=D(), ob=d.settings.budgets||{}, patch={};
+  for(const k of new Set([...Object.keys(ob),...Object.keys(nb)])) if((ob[k]||0)!==(nb[k]||0)) patch[k]=nb[k]||0;
+  d.settings.budgets=nb; if(Object.keys(patch).length) send('budgets',patch); after();
+}
+function setReserve(v){ D().settings.reserve=v; send('reserve',v); after(); }
+function addGoal(name,target){ const g={id:uid8(),name,target,base:0,ops:{},created:Date.now(),saved:0}; D().settings.goals.push(g); send('goalAdd',g); after(); }
+function goalChange(id,delta){
+  const g=D().settings.goals.find(x=>x.id===id); if(!g){ render(); return false; }
+  const opId=uid8(); g.ops[opId]=delta; g.saved=goalSaved(g); send('goalOp',id,opId,delta); after(); return true;
+}
+function removeGoal(id){ const d=D(); d.settings.goals=d.settings.goals.filter(x=>x.id!==id); send('goalDel',id); after(); }
+function replaceAll(data){ demo=null; live=data; send('replace',{months:data.months,settings:packSettings(data.settings)}); after(); }
 
 /* ---------- derived ---------- */
 function monthTx(ym){return (D().months[ym]||[]).slice()}
@@ -608,52 +714,85 @@ function hasData(){
   const d=D();
   return Object.values(d.months).some(a=>a&&a.length) || d.settings.goals.length>0 || d.settings.reserve>0 || Object.values(d.settings.budgets).some(v=>v>0);
 }
+/* average monthly spending over the last complete months (not the viewed one, not the current partial one) */
 function avgExpenses(){
-  const vals=[];
-  for(let i=0;i<12 && vals.length<3;i++){const ym=shiftYm(S.cur,-i);const e=totals(ym).exp;if(e>0)vals.push(e)}
+  const vals=[], start=shiftYm(ymOf(todayISO),-1);
+  for(let i=0;i<12 && vals.length<3;i++){ const e=totals(shiftYm(start,-i)).exp; if(e>0) vals.push(e); }
+  if(!vals.length){
+    const cur=ymOf(todayISO), e=totals(cur).exp;
+    if(e>0){ const [y,m]=cur.split('-').map(Number); vals.push(e/now.getDate()*new Date(y,m,0).getDate()); }
+  }
   return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
 }
 
 /* ---------- rendering ---------- */
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+const GOOGLE_SVG='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+function googleButton(btn){
+  btn.className='gbtn'; btn.innerHTML=GOOGLE_SVG; btn.append(document.createTextNode(C.signingIn?'Входим…':'Войти через Google'));
+  btn.disabled = !C.auth || C.signingIn; btn.onclick=signIn;
+}
 
 function renderStatus(){
   const p=$('#status'); let t='Загрузка…', c='pill';
   if(demo){t='Пример';c+=' demo'}
   else if(S.mode==='nodb'){t='Браузер не даёт сохранять';c+=' warn'}
   else if(lastSaveFailed){t='Не сохранилось';c+=' warn'}
-  else if(S.mode==='error'){t='Ошибка хранилища';c+=' warn'}
-  else if(S.mode==='slow'){t='Нет связи, данные могли устареть';c+=' warn'}
-  else if(SY.cfg && SY.state==='syncing'){t='Синхронизация…'}
-  else if(SY.cfg && SY.state==='error'){t='Сохранено только здесь';c+=' warn'}
-  else if(SY.cfg && SY.state==='ok'){t='Синхронизировано';c+=' ok'}
+  else if(C.user){
+    if(C.err){t='Ошибка синхронизации';c+=' warn'}
+    else if(!C.migrated){t='Синхронизация…'}
+    else if(C.pending){ if(navigator.onLine===false){t='Нет интернета, сохранено здесь';c+=' warn'} else t='Сохраняю…'; }
+    else {t='Синхронизировано';c+=' ok'}
+  }
   else if(S.mode==='live'){t='Только на этом устройстве'}
   p.className=c; p.textContent=t;
+}
+
+function storageTexts(){
+  const on=!!C.user;
+  $('#bakHint').textContent = on
+    ? 'Записи хранятся в вашем аккаунте Google и на этом устройстве, и появляются на всех устройствах, где вы вошли. Файл-копия нужен на всякий случай: его можно скачивать раз в месяц.'
+    : 'Сейчас записи хранятся только в этом браузере. Если очистить данные браузера, они пропадут' + (IOS?', а Safari на iPhone стирает их сам, если не открывать сайт 7 дней':'') + '. Войдите через Google или раз в неделю скачивайте копию.';
+  if(S.mode==='nodb'){ $('#welcomeH').textContent='Браузер не даёт сохранять данные'; $('#welcomeP').textContent='Похоже, открыт приватный режим или запрещено хранение данных сайтов. Откройте сайт в обычном окне.'; return; }
+  const waiting = on && !C.migrated;
+  $('#welcomeH').textContent = waiting ? 'Загружаю ваши данные…' : 'Здесь пока пусто';
+  $('#welcomeP').textContent = waiting ? 'Подождите несколько секунд: записи подтягиваются из вашего аккаунта.'
+    : 'Добавьте первую операцию в форме ниже: зарплату, покупку продуктов, перевод в копилку. ' + (on ? 'Записи сохраняются в вашем аккаунте и видны только вам.' : 'Пока записи хранятся только в этом браузере.');
 }
 
 function render(){
   renderStatus();
   $('#monthLbl').textContent = ymLabel(S.cur);
   $('#demoBanner').hidden = !demo;
-  const w=$('#welcome');
-  const showWelcome = !demo && (S.mode==='nodb' || S.mode==='error' || (S.loaded && !hasData()));
-  w.hidden = !showWelcome;
-  if(S.mode==='nodb'){ $('#welcomeH').textContent='Браузер не даёт сохранять данные'; $('#welcomeP').textContent='Похоже, открыт приватный режим или запрещено хранение данных сайтов. Записи пропадут после закрытия вкладки. Откройте сайт в обычном окне.'; }
-  else if(S.mode==='error'){ $('#welcomeH').textContent='Хранилище не отвечает'; $('#welcomeP').textContent='Записи сейчас не сохраняются. Обновите страницу чуть позже. Пока можно посмотреть пример.'; }
-  else { $('#welcomeH').textContent='Здесь пока пусто'; $('#welcomeP').textContent='Добавьте первую операцию в форме ниже: зарплату, покупку продуктов, перевод в копилку. Всё сохраняется в этом браузере, на сервер ничего не уходит.'; }
-  const loading = !demo && !S.loaded && S.mode!=='nodb' && S.mode!=='error' && S.mode!=='cache' && S.mode!=='slow';
-  renderSummary(loading); renderCats(); renderTx(); renderBudgets(); renderRule(); renderReserve(); renderGoals(); renderCalc(); renderTipsLib(); renderBackup(); renderSync();
+  storageTexts();
+  $('#welcome').hidden = !( !demo && (S.mode==='nodb' || (S.loaded && !hasData())) );
+  renderSummary(); renderCats(); renderTx(); renderBudgets(); renderRule(); renderReserve(); renderGoals(); renderCalc(); renderTipsLib(); renderBackup(); renderSync();
+}
+/* background re-render (data came from another device): keep what the user is typing */
+function renderKeepInput(){
+  const vals={}, a=document.activeElement;
+  document.querySelectorAll('#budgets input[id], #reserve input[id], #goals input[id]').forEach(i=>{ vals[i.id]=i.value; });
+  const fid = a && a.id && Object.prototype.hasOwnProperty.call(vals,a.id) ? a.id : null;
+  let s0=null, s1=null; try{ if(fid){ s0=a.selectionStart; s1=a.selectionEnd; } }catch(e){}
+  render();
+  for(const id in vals){ const i=document.getElementById(id); if(i) i.value=vals[id]; }
+  if(fid){ const i=document.getElementById(fid); if(i){ i.focus({preventScroll:true}); try{ if(s0!=null) i.setSelectionRange(s0,s1); }catch(e){} } }
 }
 
-function renderSummary(loading){
-  if(loading){ for(const id of ['#sInc','#sExp','#sSav','#sLeft']) $(id).textContent='—'; return; }
+function renderSummary(){
   const t=totals(S.cur), prev=totals(shiftYm(S.cur,-1));
   const left=t.inc-t.exp-t.sav;
   $('#sInc').textContent=money(t.inc);
   $('#sIncN').textContent = monthTx(S.cur).filter(x=>x.type==='income').length+' поступл.';
   $('#sExp').textContent=money(t.exp);
   const de=$('#sExpD'); de.textContent='';
-  if(prev.exp>0 && t.exp>0){ const d=Math.round((t.exp-prev.exp)/prev.exp*100); const ch=el('span','chip '+(d>0?'neg':'pos'),(d>0?'+':'')+d+'%'); de.append(ch,' к прошлому месяцу'); }
+  let prevExp=prev.exp, lbl=' к прошлому месяцу';
+  if(S.cur===ymOf(todayISO)){
+    const dd=now.getDate();
+    prevExp=monthTx(shiftYm(S.cur,-1)).filter(x=>x.type==='expense' && Number(x.date.slice(8))<=dd).reduce((s,x)=>s+x.amount,0);
+    lbl=' к этому дню прошлого месяца';
+  }
+  if(prevExp>0 && t.exp>0){ const d=Math.round((t.exp-prevExp)/prevExp*100); de.append(el('span','chip '+(d>0?'neg':'pos'),(d>0?'+':'')+d+'%'),lbl); }
   else de.textContent=' ';
   $('#sSav').textContent=money(t.sav);
   const r=$('#sRate'); r.textContent='';
@@ -695,7 +834,7 @@ function renderTx(){
     if(x.note) info.append(el('div','t2',x.note));
     const sign = x.type==='income'?'+':x.type==='saving'?'→ ':'−';
     const a=el('span','amt '+(x.type==='income'?'inc':x.type==='saving'?'sav':''),sign+money(x.amount));
-    const del=el('button','x','×'); del.setAttribute('aria-label','Удалить операцию'); del.addEventListener('click',()=>deleteTx(x));
+    const del=el('button','x','×'); del.type='button'; del.setAttribute('aria-label','Удалить операцию '+money(x.amount)); del.addEventListener('click',()=>deleteTx(x));
     r.append(info,a,del); box.append(r);
   }
 }
@@ -715,9 +854,13 @@ function renderBudgets(){
     }
     const sv=el('button','btn primary','Сохранить лимиты'); sv.type='submit';
     f.append(g, sv);
-    f.addEventListener('submit',e=>{e.preventDefault(); const nb={};
-      for(const [id] of CATS.expense){ const v=parseCents($('#b_'+id).value); if(v>0) nb[id]=v; }
-      D().settings.budgets=nb; S.editBud=false; persist('settings'); render(); toast('Лимиты сохранены');});
+    f.addEventListener('submit',e=>{ e.preventDefault(); const nb={}; let bad=null;
+      for(const [id,name] of CATS.expense){ const raw=$('#b_'+id).value.trim(); if(!raw) continue; const v=parseCents(raw); if(isNaN(v)){ bad=name; continue; } if(v>0) nb[id]=v; }
+      // keep limits of old categories that are not in the form any more
+      for(const k in b) if(!CAT[k] || CAT[k].type!=='expense' || !CATS.expense.some(c=>c[0]===k)) nb[k]=b[k];
+      if(bad){ toast('Не понял сумму в «'+bad+'». Пример: 200 или 150,50'); return; }
+      S.editBud=false; setBudgets(nb); toast('Лимиты сохранены');
+    });
     box.append(f); return;
   }
   const ids=Object.keys(b).filter(k=>b[k]>0);
@@ -726,7 +869,7 @@ function renderBudgets(){
     const q=el('div','quick');
     for(const [id,v] of [['groceries',20000],['wants',10000],['cafe',6000]]){
       const btn=el('button','btn small',(CAT[id].name)+' '+money0(v)); btn.type='button';
-      btn.addEventListener('click',()=>{ D().settings.budgets[id]=v; persist('settings'); render(); toast('Лимит: '+CAT[id].name+' '+money0(v)); });
+      btn.addEventListener('click',()=>{ const nb=Object.assign({},D().settings.budgets); nb[id]=v; setBudgets(nb); toast('Лимит: '+CAT[id].name+' '+money0(v)); });
       q.append(btn);
     }
     box.append(q); return;
@@ -746,7 +889,7 @@ function renderBudgets(){
     else if(st==='warn') chipBox.append(el('span','chip warn','Осталось '+money(lim-spent)));
     else chipBox.append(el('span','chip mut','Осталось '+money(lim-spent)));
     const open=S.advOpen===id;
-    const ab=el('button','btn link small',open?'Скрыть подсказки':'Как уложиться →'); ab.type='button'; ab.setAttribute('aria-expanded',open);
+    const ab=el('button','btn link small',open?'Скрыть подсказки':'Как уложиться →'); ab.type='button'; ab.setAttribute('aria-expanded',String(open));
     ab.addEventListener('click',()=>{ S.advOpen=open?null:id; renderBudgets(); });
     foot.append(chipBox,ab); w.append(foot);
     if(open) w.append(adviceEl(id,spent,lim));
@@ -763,10 +906,11 @@ function advLine(k,v){const d=el('div','adv-line');d.append(el('span',null,k),el
 
 function adviceEl(id,spent,lim){
   const p=el('div','advice'); const ctx=monthCtx(S.cur); const rest=lim-spent;
+  const dl=n=>n+' '+plural(n,'день','дня','дней');
   if(ctx.state==='cur'){
     if(rest>0){
       const perDay=rest/ctx.daysLeft;
-      p.append(advLine('Осталось',money(rest)+' на '+ctx.daysLeft+' '+plural(ctx.daysLeft,'день','дня','дней')));
+      p.append(advLine('Осталось',money(rest)+' на '+dl(ctx.daysLeft)));
       p.append(advLine('Можно тратить',money0(perDay)+' в день · '+money0(Math.min(rest,perDay*7))+' в неделю'));
       if(ctx.daysPassed>=5 && spent>0){
         const pace=spent/ctx.daysPassed*ctx.last;
@@ -775,9 +919,8 @@ function adviceEl(id,spent,lim){
           : 'Темп хороший: к концу месяца выйдет около '+money0(pace)+'.'));
       }
     } else {
-      p.append(el('p','adv-warn', rest===0
-        ? 'Лимит исчерпан. До конца месяца '+ctx.daysLeft+' '+plural(ctx.daysLeft,'день','дня','дней')+': обходитесь запасами, а если без трат никак, берите из хотелок, а не из сбережений.'
-        : 'Лимит превышен на '+money(-rest)+'. До конца месяца '+ctx.daysLeft+' '+plural(ctx.daysLeft,'день','дня','дней')+': обходитесь запасами, а если без трат никак, берите из хотелок, а не из сбережений.'));
+      p.append(el('p','adv-warn', (rest===0 ? 'Лимит исчерпан.' : 'Лимит превышен на '+money(-rest)+'.')
+        +' До конца месяца '+dl(ctx.daysLeft)+': обходитесь запасами, а если без трат никак, берите из хотелок, а не из сбережений.'));
     }
   } else if(ctx.state==='past'){
     p.append(el('p',rest>=0?'adv-ok':'adv-warn', rest>=0
@@ -786,18 +929,15 @@ function adviceEl(id,spent,lim){
   } else {
     p.append(advLine('В среднем можно',money0(lim/ctx.last)+' в день · '+money0(lim/ctx.last*7)+' в неделю'));
   }
-
   const key=tipKeyFor(id);
   const tl=el('ul','adv-tips'); for(const tip of TIP_LIB[key].slice(0,3)) tl.append(el('li',null,tip)); p.append(tl);
   const more=el('button','btn link small','Все советы: '+TIP_TABS.find(t=>t[0]===key)[1].toLowerCase()); more.type='button';
   more.addEventListener('click',()=>{ S.tipTab=key; renderTipsLib(); document.getElementById('tipsCard').scrollIntoView({behavior:'smooth',block:'start'}); });
   p.append(more);
-
   if(id==='groceries'){
     const weekly = ctx.state==='cur' ? (rest>0 ? Math.min(rest, rest/ctx.daysLeft*7) : 0) : lim/ctx.last*7;
     const open=!!S.basketOpen;
-    const bb=el('button','btn primary small',open?'Скрыть список':'Что купить на неделю'); bb.type='button';
-    bb.style.alignSelf='flex-start';
+    const bb=el('button','btn primary small',open?'Скрыть список':'Что купить на неделю'); bb.type='button'; bb.style.alignSelf='flex-start';
     bb.addEventListener('click',()=>{ S.basketOpen=!open; renderBudgets(); });
     p.append(bb);
     if(open) p.append(basketEl(weekly));
@@ -822,7 +962,6 @@ function basketEl(weekly){
   }
   let items=BASKET_BASE.slice();
   const sum=a=>a.reduce((s,x)=>s+x[1],0);
-  // too expensive: drop the pricier extras first, add legumes instead of meat
   for(const drop of ['Сыр, 400 г','Йогурт или творог, 500 г','Куриные бёдра, 1 кг','Яблоки и бананы, 2 кг']){
     if(sum(items)<=weekly) break;
     items=items.filter(x=>x[0]!==drop);
@@ -844,7 +983,7 @@ function basketEl(weekly){
 function renderRule(){
   const box=$('#rule'); box.textContent='';
   const t=totals(S.cur);
-  if(t.inc<=0){ box.append(el('p','empty','Добавьте доход за месяц, чтобы сравнить с правилом.')); return; }
+  if(t.inc<=0){ box.append(el('p','empty','Добавьте доход за месяц, чтобы сравнить с ориентиром.')); return; }
   const savings=Math.max(0,t.inc-t.exp);
   const parts=[['Нужное',t.need,50,'var(--need)'],['Хотелки',t.want,30,'var(--want)'],['Сбережения',savings,20,'var(--save)']];
   const st=el('div','stack'); st.setAttribute('role','img');
@@ -864,10 +1003,10 @@ function renderRule(){
 function renderReserve(){
   const box=$('#reserve'); box.textContent='';
   const r=D().settings.reserve||0; const avg=avgExpenses();
-  const top=el('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.alignItems='baseline'; top.style.gap='8px'; top.style.flexWrap='wrap';
+  const top=el('div'); top.style.cssText='display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap';
   top.append(el('span','big',money0(r)));
   const months = avg>0 ? r/avg : 0;
-  if(avg>0){ const ch=el('span','chip '+(months>=6?'pos':months>=3?'pos':months>=1?'warn':'neg'), months.toFixed(1).replace('.',',')+' мес. жизни'); top.append(ch); }
+  if(avg>0) top.append(el('span','chip '+(months>=3?'pos':months>=1?'warn':'neg'), months.toFixed(1).replace('.',',')+' мес. жизни'));
   box.append(top);
   const sc=el('div','months-scale');
   for(let i=0;i<6;i++){ const d=el('div'); const f=months-i; if(f>=1) d.className='on'; else if(f>0){ d.className='part'; d.style.setProperty('--p',Math.round(f*100)+'%'); } sc.append(d); }
@@ -880,7 +1019,7 @@ function renderReserve(){
   mi.append(inp,el('span',null,'€')); fl.append(l,mi);
   const b=el('button','btn','Обновить'); b.type='submit';
   f.append(fl,b);
-  f.addEventListener('submit',e=>{e.preventDefault(); const v=parseCents(inp.value); if(isNaN(v)||v<0){toast('Введите сумму, например 2500');return;} D().settings.reserve=v; persist('settings'); render(); toast('Резерв обновлён');});
+  f.addEventListener('submit',e=>{ e.preventDefault(); const v=parseCents(inp.value); if(isNaN(v)||v<0){ toastErr('Введите сумму, например 2500'); return; } setReserve(v); toast('Резерв обновлён'); });
   box.append(f);
 }
 
@@ -889,6 +1028,7 @@ function renderGoals(){
   const goals=D().settings.goals||[];
   if(!goals.length){ box.append(el('p','empty','Целей пока нет. Цель с суммой и сроком копится быстрее, чем «просто откладывать».')); return; }
   for(const g of goals){
+    const id=g.id;
     const w=el('div','goal');
     const row=el('div','row'); row.append(el('b',null,g.name));
     const p=g.target>0?Math.min(1,g.saved/g.target):0;
@@ -898,16 +1038,23 @@ function renderGoals(){
     const rest=g.target-g.saved;
     w.append(el('div','hint', rest>0 ? 'Осталось '+money0(rest)+' · '+Math.round(p*100)+'%' : 'Цель достигнута 🎉'));
     const acts=el('form','acts'); acts.noValidate=true;
-    const mi=el('div','money-in'); const inp=el('input','input'); inp.inputMode='decimal'; inp.placeholder='Сумма'; inp.autocomplete='off'; inp.setAttribute('aria-label','Сумма для цели «'+g.name+'»'); inp.id='g_'+g.id;
+    const mi=el('div','money-in'); const inp=el('input','input'); inp.inputMode='decimal'; inp.placeholder='Сумма'; inp.autocomplete='off'; inp.setAttribute('aria-label','Сумма для цели «'+g.name+'»'); inp.id='g_'+id;
     mi.append(inp,el('span',null,'€'));
     const add=el('button','btn small','Пополнить'); add.type='submit';
     const sub=el('button','btn small','Снять'); sub.type='button';
-    const del=el('button','btn small danger', S.confirmGoal===g.id?'Точно удалить?':'Удалить'); del.type='button';
+    const del=el('button','btn small danger', S.confirmGoal===id?'Точно удалить?':'Удалить'); del.type='button';
     acts.append(mi,add,sub,del);
-    const change=sign=>{ const v=parseCents(inp.value); if(!(v>0)){toast('Введите сумму');return;} g.saved=Math.max(0,g.saved+sign*v); persist('settings'); render(); };
+    // look the goal up by id at click time: the list may have been refreshed from another device
+    const change=sign=>{
+      const v=parseCents(inp.value); if(!(v>0)){ toastErr('Введите сумму'); return; }
+      const cur=(D().settings.goals||[]).find(x=>x.id===id); if(!cur){ render(); return; }
+      const delta = sign>0 ? v : -Math.min(v, cur.saved);
+      if(!delta){ toast('В этой цели пока нет денег'); return; }
+      goalChange(id,delta);
+    };
     acts.addEventListener('submit',e=>{e.preventDefault();change(1)});
     sub.addEventListener('click',()=>change(-1));
-    del.addEventListener('click',()=>{ if(S.confirmGoal===g.id){ D().settings.goals=goals.filter(x=>x.id!==g.id); S.confirmGoal=null; persist('settings'); render(); toast('Цель удалена'); } else { S.confirmGoal=g.id; render(); } });
+    del.addEventListener('click',()=>{ if(S.confirmGoal===id){ S.confirmGoal=null; removeGoal(id); toast('Цель удалена'); } else { S.confirmGoal=id; renderGoals(); } });
     w.append(acts); box.append(w);
   }
 }
@@ -925,7 +1072,7 @@ function renderCalc(){
   const lg=el('div','legend'); const l1=el('span'); const i1=el('i'); i1.style.background='var(--accent)'; l1.append(i1,'Ваши взносы '+fmt0.format(Math.round(put)));
   const l2=el('span'); const i2=el('i'); i2.style.background='var(--pos)'; l2.append(i2,'Проценты '+fmt0.format(Math.round(gain))); lg.append(l1,l2); out.append(lg);
 }
-function plural(n,a,b,c){const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<12||h>14))return b;return c}
+function plural(n,a,b,c){n=Math.abs(Math.floor(n));const m=n%10,h=n%100;if(m===1&&h!==11)return a;if(m>=2&&m<=4&&(h<12||h>14))return b;return c}
 
 function renderTipsLib(){
   const tabs=$('#tipTabs'); tabs.textContent='';
@@ -936,6 +1083,68 @@ function renderTipsLib(){
   const ul=$('#tipList'); ul.textContent=''; for(const t of TIP_LIB[S.tipTab]) ul.append(el('li',null,t));
 }
 
+function countTx(d){return Object.values(d.months).reduce((s,a)=>s+a.length,0)}
+function renderBackup(){
+  const last=lsGet(KEY+'.lastExport');
+  const n=countTx(live); const info=$('#bakInfo'); info.textContent='';
+  if(!n){ info.textContent='Пока нечего сохранять.'; return; }
+  const synced = !!C.user && C.migrated;
+  info.append((synced?'Всего ':'В браузере ')+n+' '+plural(n,'операция','операции','операций')+'. ');
+  if(!last){ if(!synced) info.append(el('span','chip warn','Копию ещё ни разу не скачивали')); return; }
+  const [y,m,d]=last.split('-').map(Number); const days=Math.floor((now-new Date(y,m-1,d))/86400000);
+  info.append('Последняя копия: '+new Date(y,m-1,d).toLocaleDateString('ru-RU')+'. ');
+  if(days >= (synced?30:7)) info.append(el('span', synced?'chip mut':'chip warn','Пора скачать новую'));
+}
+
+function renderSync(){
+  const card=$('#syncCard'), banner=$('#authBanner');
+  if(!FIREBASE_CONFIG){ card.hidden=true; banner.hidden=true; return; }
+  card.hidden=false;
+  const box=$('#syncBody'), chip=$('#syncChip'); box.textContent='';
+  banner.hidden = !!C.user || !!demo || C.state==='error';
+  if(!banner.hidden){
+    $('#authBannerText').textContent = INAPP ? 'Чтобы войти, откройте сайт в обычном браузере (Chrome или Safari), а не внутри мессенджера.' : 'Войдите через Google, и записи будут одинаковыми на телефоне и компьютере.';
+    googleButton($('#authBannerBtn'));
+  }
+  if(C.state==='error'){ chip.className='chip neg'; chip.textContent='Ошибка'; box.append(el('p','form-err',C.err)); return; }
+  if(!C.user){
+    chip.className='chip warn'; chip.textContent=C.state==='loading'?'Загрузка…':'Не выполнен';
+    box.append(el('p','hint','Войдите через Google на каждом своём устройстве одним и тем же аккаунтом. Записи будут одинаковыми везде и видны только вам. Пароли и настройки не нужны.'));
+    if(INAPP) box.append(el('p','adv-warn','Вы открыли сайт внутри приложения (мессенджера). Вход там часто не работает: откройте ссылку в Chrome или Safari.'));
+    else if(IOS && STANDALONE) box.append(el('p','adv-warn','В значке на экране «Домой» вход может не открыться. Если так, откройте сайт в Safari и войдите там.'));
+    else if(IOS) box.append(el('p','hint','На iPhone без входа Safari сам стирает записи сайта, если не открывать его 7 дней. После входа они хранятся в аккаунте.'));
+    const b=el('button'); b.type='button'; googleButton(b); box.append(b);
+    return;
+  }
+  const acct=el('div','acct');
+  if(C.user.photoURL){ const img=el('img'); img.src=C.user.photoURL; img.alt=''; img.referrerPolicy='no-referrer'; acct.append(img); }
+  const who=el('div'); who.append(el('div',null,C.user.displayName||'Вы вошли'));
+  if(C.user.email) who.append(el('div','hint',C.user.email));
+  acct.append(who); box.append(acct);
+  if(C.err){ chip.className='chip neg'; chip.textContent='Ошибка'; box.append(el('p','form-err',C.err)); }
+  else if(!C.migrated){ chip.className='chip mut'; chip.textContent='Синхронизация…'; box.append(el('p','hint', navigator.onLine===false?'Нет интернета. Записи сохраняются здесь и отправятся, когда связь появится.':'Получаю данные из аккаунта…')); }
+  else if(C.pending){ chip.className='chip mut'; chip.textContent='Сохраняю…'; box.append(el('p','hint', navigator.onLine===false?'Нет интернета. Изменения сохранены здесь и отправятся, когда связь появится.':'Отправляю изменения…')); }
+  else { chip.className='chip pos'; chip.textContent='Включена'; box.append(el('p','hint','Всё сохранено в аккаунте. Изменения с других устройств появляются здесь сами.')); }
+  const out=el('button','btn small danger', S.confirmOut?'Точно выйти?':'Выйти на этом устройстве'); out.type='button';
+  out.addEventListener('click',()=>{ if(!S.confirmOut){ S.confirmOut=true; renderSync(); return; } S.confirmOut=false; C.Au.signOut(C.auth).then(()=>toast('Вы вышли. Записи остались на этом устройстве.')).catch(()=>toast('Не удалось выйти, попробуйте ещё раз.')); });
+  box.append(out);
+}
+function signIn(){
+  if(!C.auth || C.signingIn) return;
+  const prov=new C.Au.GoogleAuthProvider(); prov.setCustomParameters({prompt:'select_account'});
+  C.signingIn=true; renderSync();
+  // called straight from the click, so browsers allow the popup
+  C.Au.signInWithPopup(C.auth,prov).catch(e=>{
+    const c=e&&e.code||'';
+    if(c==='auth/popup-closed-by-user' || c==='auth/cancelled-popup-request') return;
+    toast(c==='auth/popup-blocked' ? 'Браузер заблокировал окно входа. Разрешите всплывающие окна для этого сайта и нажмите ещё раз.'
+      : c==='auth/unauthorized-domain' ? 'Вход с этого адреса пока не разрешён в настройках Firebase.'
+      : c==='auth/network-request-failed' ? 'Нет интернета. Попробуйте ещё раз.'
+      : c==='auth/operation-not-allowed' ? 'Вход через Google ещё не включён в настройках Firebase.'
+      : 'Не удалось войти ('+(c||'ошибка')+').');
+  }).finally(()=>{ C.signingIn=false; renderSync(); });
+}
+
 /* ---------- actions ---------- */
 function fillCats(){
   const type=document.querySelector('input[name="ttype"]:checked').value;
@@ -944,21 +1153,29 @@ function fillCats(){
   if([...sel.options].some(o=>o.value===prev)) sel.value=prev;
 }
 function defaultDate(){ $('#fDate').value = S.cur===ymOf(todayISO) ? todayISO : S.cur+'-01'; }
-
-function addTx(tx){ const ym=ymOf(tx.date); const d=D(); (d.months[ym]||(d.months[ym]=[])).push(tx); if(d.deleted) delete d.deleted[tx.id]; persist('m-'+ym); render(); }
-let lastDeleted=null;
-function deleteTx(x){
-  const d=D(); const ym=ymOf(x.date); const arr=d.months[ym]||[]; const i=arr.findIndex(t=>t.id===x.id); if(i<0) return;
-  arr.splice(i,1); if(d.deleted) d.deleted[x.id]=Math.max(Date.now(),(x.ts||0)+1); persist('m-'+ym); render();
-  lastDeleted=x; toast('Операция удалена','Вернуть',()=>{ if(lastDeleted){ addTx(Object.assign({},lastDeleted,{ts:Date.now()+1})); lastDeleted=null; } });
+/* the page may stay open for days on a phone: keep "today" current */
+function refreshToday(){
+  const prev=todayISO; now=new Date(); todayISO=isoOf(now);
+  if(todayISO===prev) return;
+  if(S.cur===ymOf(prev)) S.cur=ymOf(todayISO);
+  const f=$('#fDate'); if(f && f.value===prev) f.value=todayISO;
+  render();
 }
 
-let toastTimer=null;
+let lastDeleted=null, toastTimer=null;
+function dropUndo(){ lastDeleted=null; clearTimeout(toastTimer); $('#toast').hidden=true; $('#toastAct').onclick=null; }
+function deleteTx(x){
+  if(!removeTx(x)) return;
+  lastDeleted={tx:x, demo:!!demo};
+  toast('Операция удалена','Вернуть',()=>{ const L=lastDeleted; lastDeleted=null; if(!L || L.demo!==!!demo) return; addTx(Object.assign({},L.tx)); });
+}
 function toast(msg,actLabel,act){
   const t=$('#toast'); $('#toastMsg').textContent=msg; const b=$('#toastAct');
   if(actLabel){ b.hidden=false; b.textContent=actLabel; b.onclick=()=>{ act(); t.hidden=true; }; } else { b.hidden=true; b.onclick=null; }
-  t.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.hidden=true},actLabel?6000:3000);
+  t.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>{t.hidden=true},actLabel?10000:3500);
 }
+/* on phones close the keyboard so the message is not hidden behind it */
+function toastErr(msg){ toast(msg); if(coarse() && document.activeElement) document.activeElement.blur(); }
 
 function makeDemo(){
   const months={}; const cur=ymOf(todayISO);
@@ -968,15 +1185,16 @@ function makeDemo(){
     const ym=shiftYm(cur,-k); const [y,m]=ym.split('-').map(Number); const ld=new Date(y,m,0).getDate();
     const arr=[];
     spec.forEach((s,i)=>{
-      let day=Math.min(s[3],ld);
+      const day=Math.min(s[3],ld);
       if(k===0 && day>lastDayCur) return;
       if(s[1]==='side' && k===1) return;
-      const wobble = s[0]==='expense' && !['housing','transport','subs'].includes(s[1]) ? 1+((i*7+k*13)%9-4)/20 : 1;
+      const wobble = s[0]==='expense' && !['transport','subs'].includes(s[1]) ? 1+((i*7+k*13)%9-4)/20 : 1;
       arr.push({id:uid8(),type:s[0],cat:s[1],amount:Math.round(s[2]*wobble),date:`${ym}-${pad(day)}`,note:s[4],ts:i});
     });
     months[ym]=arr;
   }
-  return {months, settings:{budgets:{groceries:20000,wants:10000,cafe:6000,fun:5000,clothes:5000},goals:[{id:'g1',name:'Отпуск в Португалии',target:150000,saved:62000},{id:'g2',name:'Новый ноутбук',target:120000,saved:30000}],reserve:180000}};
+  const goals=[{id:'g1',name:'Отпуск в Португалии',target:150000,base:62000,ops:{},created:1},{id:'g2',name:'Новый ноутбук',target:120000,base:30000,ops:{},created:2}].map(g=>Object.assign(g,{saved:g.base}));
+  return {months, settings:{budgets:{groceries:20000,wants:10000,cafe:6000,fun:5000,clothes:5000},goals,reserve:180000}};
 }
 
 /* ---------- wiring ---------- */
@@ -985,84 +1203,36 @@ $('#prevM').addEventListener('click',()=>{S.cur=shiftYm(S.cur,-1);defaultDate();
 $('#nextM').addEventListener('click',()=>{S.cur=shiftYm(S.cur,1);defaultDate();render()});
 $('#txForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const err=$('#fErr'); err.hidden=true;
+  refreshToday();
+  const err=$('#fErr'); err.hidden=true; err.textContent='';
   const amount=parseCents($('#fAmt').value); const date=$('#fDate').value;
-  if(!(amount>0)){ err.textContent='Введите сумму больше нуля, например 12,50.'; err.hidden=false; $('#fAmt').focus(); return; }
-  if(amount>100000000){ err.textContent='Слишком большая сумма. Проверьте, нет ли лишних нулей.'; err.hidden=false; return; }
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ err.textContent='Укажите дату.'; err.hidden=false; return; }
+  const fail=m=>{ err.textContent=m; err.hidden=false; };
+  if(!(amount>0)){ fail('Введите сумму больше нуля, например 12,50.'); if(!coarse()) $('#fAmt').focus(); return; }
+  if(amount>100000000){ fail('Слишком большая сумма. Проверьте, нет ли лишних нулей.'); return; }
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ fail('Укажите дату.'); return; }
   const type=document.querySelector('input[name="ttype"]:checked').value;
-  addTx({id:uid8(),type,cat:$('#fCat').value,amount,date,note:$('#fNote').value.trim().slice(0,80),ts:Date.now()});
+  const cat=$('#fCat').value;
+  addTx({id:uid8(),type,cat,amount,date,note:$('#fNote').value.trim().slice(0,80),ts:Date.now()});
   if(ymOf(date)!==S.cur){ S.cur=ymOf(date); render(); }
-  $('#fAmt').value=''; $('#fNote').value=''; $('#fAmt').focus();
-  toast('Добавлено: '+(CAT[$('#fCat').value]||{}).name+' · '+money(amount));
+  $('#fAmt').value=''; $('#fNote').value='';
+  if(coarse()){ if(document.activeElement) document.activeElement.blur(); } else $('#fAmt').focus();
+  toast((demo?'Это пример, запись не сохранится: ':'Добавлено: ')+(CAT[cat]||{}).name+' · '+money(amount)+(date!==todayISO?' · '+dayLabel(date):''));
 });
 $('#goalForm').addEventListener('submit',e=>{
   e.preventDefault();
   const name=$('#gName').value.trim(); const target=parseCents($('#gTarget').value);
-  if(!name){toast('Назовите цель');$('#gName').focus();return}
-  if(!(target>0)){toast('Укажите, сколько нужно накопить');$('#gTarget').focus();return}
-  D().settings.goals.push({id:uid8(),name:name.slice(0,40),target,saved:0});
-  $('#gName').value=''; $('#gTarget').value=''; persist('settings'); render();
+  if(!name){ toastErr('Назовите цель'); if(!coarse()) $('#gName').focus(); return; }
+  if(!(target>0)){ toastErr('Укажите, сколько нужно накопить'); if(!coarse()) $('#gTarget').focus(); return; }
+  $('#gName').value=''; $('#gTarget').value='';
+  addGoal(name.slice(0,40),target);
 });
 $('#editBud').addEventListener('click',()=>{S.editBud=!S.editBud;renderBudgets()});
-function countTx(d){return Object.values(d.months).reduce((s,a)=>s+a.length,0)}
-function renderBackup(){
-  let last=null; try{ last=localStorage.getItem(KEY+'.lastExport'); }catch(e){}
-  const n=countTx(live); const info=$('#bakInfo'); info.textContent='';
-  if(!n){ info.textContent='Пока нечего сохранять.'; return; }
-  info.append('В браузере '+n+' '+plural(n,'операция','операции','операций')+'. ');
-  if(!last){ info.append(el('span','chip warn','Копию ещё ни разу не скачивали')); return; }
-  const [y,m,d]=last.split('-').map(Number); const days=Math.floor((now-new Date(y,m-1,d))/86400000);
-  info.append('Последняя копия: '+new Date(y,m-1,d).toLocaleDateString('ru-RU')+'. ');
-  if(days>=14) info.append(el('span','chip warn','Пора скачать новую'));
-}
-function renderSync(){
-  const box=$('#syncBody'); if(!box) return; box.textContent='';
-  const chip=$('#syncChip');
-  if(!SY.cfg){
-    chip.className='chip warn'; chip.textContent='Выключена';
-    box.append(el('p','hint','Сейчас записи есть только на этом устройстве. Подключите синхронизацию, и одно изменение появится везде: на телефоне, ноутбуке, в другом браузере. Данные хранятся в вашем закрытом репозитории GitHub, их видите только вы.'));
-    const ol=el('ol','sync-steps');
-    const li1=el('li'); li1.append('Откройте ');
-    const a=el('a',null,'страницу создания токена на GitHub'); a.href='https://github.com/settings/personal-access-tokens/new'; a.target='_blank'; a.rel='noopener'; li1.append(a,'.');
-    ol.append(li1,
-      el('li',null,'Token name: Евробюджет. Expiration: самый долгий срок, какой разрешит GitHub.'),
-      el('li',null,'Repository access: Only select repositories → '+DEFAULT_REPO.split('/')[1]+'.'),
-      el('li',null,'Permissions → Repositories → Add permissions → Contents → Read and write.'),
-      el('li',null,'Нажмите Generate token, скопируйте токен (начинается с github_pat_) и вставьте ниже.'));
-    box.append(ol);
-    box.append(el('p','hint','Сохраните токен в заметках или менеджере паролей: на каждом новом устройстве его нужно вставить один раз. Никому его не отправляйте.'));
-    const f=el('form','inline'); f.noValidate=true;
-    const fl=el('div','field'); const l=el('label',null,'Токен'); l.htmlFor='syncToken';
-    const inp=el('input','input'); inp.id='syncToken'; inp.type='password'; inp.autocomplete='off'; inp.placeholder='github_pat_…'; inp.spellcheck=false;
-    fl.append(l,inp);
-    const b=el('button','btn primary','Подключить'); b.type='submit';
-    f.append(fl,b); box.append(f);
-    f.addEventListener('submit',e=>{
-      e.preventDefault();
-      const t=inp.value.trim();
-      if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(t)){ toast('Это не похоже на токен GitHub. Он начинается с github_pat_'); inp.focus(); return; }
-      SY.cfg={token:t,repo:DEFAULT_REPO}; saveCfg(); SY.state='syncing'; renderSync(); sync();
-    });
-    return;
-  }
-  if(SY.state==='syncing'){ chip.className='chip mut'; chip.textContent='Синхронизация…'; }
-  else if(SY.state==='error'){ chip.className='chip neg'; chip.textContent='Ошибка'; }
-  else { chip.className='chip pos'; chip.textContent='Включена'; }
-  if(SY.state==='error') box.append(el('p','form-err',SY.err));
-  else box.append(el('p','hint', SY.lastOk ? 'Последняя синхронизация в '+SY.lastOk.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})+'. Изменения с других устройств подтягиваются, когда вы открываете сайт, и каждые 30 секунд.' : 'Подключаюсь к хранилищу…'));
-  const q=el('div','quick');
-  const now1=el('button','btn small','Синхронизировать сейчас'); now1.type='button'; now1.disabled=SY.busy; now1.addEventListener('click',()=>sync());
-  const off=el('button','btn small danger', S.confirmOff?'Точно отключить?':'Отключить на этом устройстве'); off.type='button';
-  off.addEventListener('click',()=>{ if(!S.confirmOff){ S.confirmOff=true; renderSync(); return; } S.confirmOff=false; SY.cfg=null; SY.state='off'; saveCfg(); renderStatus(); renderSync(); toast('Синхронизация отключена. Записи остались на этом устройстве.'); });
-  q.append(now1,off); box.append(q);
-}
 $('#exportBtn').addEventListener('click',()=>{
-  const data=JSON.stringify({app:'evrobudget',v:1,exportedAt:new Date().toISOString(),months:live.months,settings:live.settings},null,1);
+  const data=JSON.stringify({app:'evrobudget',v:3,exportedAt:new Date().toISOString(),months:live.months,settings:packSettings(live.settings)},null,1);
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
   a.download='evrobudget-'+todayISO+'.json'; document.body.append(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
-  try{ localStorage.setItem(KEY+'.lastExport',todayISO); }catch(e){}
+  lsSet(KEY+'.lastExport',todayISO);
   renderBackup(); toast('Копия скачана');
 });
 $('#importBtn').addEventListener('click',()=>$('#importFile').click());
@@ -1073,8 +1243,9 @@ $('#importFile').addEventListener('change',e=>{
     let parsed=null; try{ parsed=JSON.parse(String(r.result)); }catch(err){}
     if(!parsed || typeof parsed!=='object' || !parsed.months){ toast('Это не файл копии Евробюджета.'); return; }
     importPending=normalize(parsed);
-    const n=countTx(importPending), cur=countTx(live);
-    $('#importMsg').textContent='В файле '+n+' '+plural(n,'операция','операции','операций')+', '+importPending.settings.goals.length+' '+plural(importPending.settings.goals.length,'цель','цели','целей')+'. Сейчас в браузере '+cur+' '+plural(cur,'операция','операции','операций')+': они будут заменены данными из файла.';
+    const n=countTx(importPending), cur=countTx(live), g=importPending.settings.goals.length;
+    if(!n && !g){ toast('В файле нет ни одной операции и цели.'); importPending=null; return; }
+    $('#importMsg').textContent='В файле '+n+' '+plural(n,'операция','операции','операций')+', '+g+' '+plural(g,'цель','цели','целей')+'. Сейчас '+cur+' '+plural(cur,'операция','операции','операций')+': они будут заменены данными из файла'+(C.user?' на всех ваших устройствах.':'.');
     $('#importConfirm').hidden=false;
   };
   r.onerror=()=>toast('Не удалось прочитать файл.');
@@ -1083,19 +1254,27 @@ $('#importFile').addEventListener('change',e=>{
 $('#importNo').addEventListener('click',()=>{importPending=null;$('#importConfirm').hidden=true});
 $('#importYes').addEventListener('click',()=>{
   if(!importPending) return;
-  // operations that are not in the file get deleted on every device too
-  const keep={}; for(const ym in importPending.months) for(const t of importPending.months[ym]) keep[t.id]=1;
-  const now2=Date.now();
-  for(const ym in live.months) for(const t of live.months[ym]) if(!keep[t.id]) importPending.deleted[t.id]=now2;
-  for(const ym in importPending.months) for(const t of importPending.months[ym]) { t.ts=Math.max(t.ts||0, now2+1); delete importPending.deleted[t.id]; }
-  importPending.settings.updatedAt=now2;
-  live=importPending; importPending=null; demo=null; $('#importConfirm').hidden=true;
-  persist(); render(); toast('Данные загружены из файла');
+  const data=importPending; importPending=null; $('#importConfirm').hidden=true;
+  dropUndo(); replaceAll(data); toast('Данные загружены из файла');
 });
-$('#showDemo').addEventListener('click',()=>{demo=makeDemo();S.cur=ymOf(todayISO);defaultDate();render();window.scrollTo({top:0,behavior:'smooth'})});
-$('#exitDemo').addEventListener('click',()=>{demo=null;S.editBud=false;render()});
+$('#showDemo').addEventListener('click',()=>{dropUndo();demo=makeDemo();S.cur=ymOf(todayISO);defaultDate();render();window.scrollTo({top:0,behavior:'smooth'})});
+$('#exitDemo').addEventListener('click',()=>{dropUndo();demo=null;S.editBud=false;render()});
 for(const id of ['#cStart','#cMonthly','#cRate','#cYears']) $(id).addEventListener('input',renderCalc);
 
+function init(){
+  lsDel('evrobudget.sync');   // token of the old GitHub sync, no longer used
+  loadLocal();
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
+  render();
+  window.addEventListener('storage',e=>{ if(e.key===KEY && !C.user){ loadLocal(); renderKeepInput(); } });
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') refreshToday(); });
+  window.addEventListener('pageshow',refreshToday);
+  window.addEventListener('focus',refreshToday);
+  window.addEventListener('online',()=>{ renderStatus(); renderSync(); });
+  window.addEventListener('offline',()=>{ renderStatus(); renderSync(); });
+  setInterval(refreshToday,60000);
+  initCloud();
+}
 fillCats(); defaultDate(); init();
 })();
 </script>
